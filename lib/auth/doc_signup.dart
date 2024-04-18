@@ -19,6 +19,8 @@ class _DocSignUpState extends State<DocSignUp> {
   final TextEditingController specialityController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController expController = TextEditingController();
+  final TextEditingController descController = TextEditingController();
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -38,6 +40,8 @@ class _DocSignUpState extends State<DocSignUp> {
         'speciality': specialityController.text,
         'email': emailController.text,
         'uid': userCredential.user!.uid,
+        'exp': expController,
+        'description':descController
       });
 
       Navigator.push(
@@ -111,6 +115,11 @@ class _DocSignUpState extends State<DocSignUp> {
                       entryField('Email', emailController),
                       const SizedBox(height: 10),
                       entryField('Password', passwordController),
+                      const SizedBox(height: 10),
+                      entryField('Experience', expController),
+                      const SizedBox(height: 10),
+                      entryField('Description', descController),
+                      
                       _errorMessage(),
                       submitButton(context),
                     ],
