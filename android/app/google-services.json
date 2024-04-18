@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "966116419979",
+    "project_id": "doc-appoint-bea6b",
+    "storage_bucket": "doc-appoint-bea6b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:966116419979:android:eae637384b8a649fe4e78e",
+        "android_client_info": {
+          "package_name": "com.example.doc_appoint"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9C029rzgyG73uym4j1Wb9NElMAW1sBcc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
