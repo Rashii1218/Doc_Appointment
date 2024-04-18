@@ -1,44 +1,40 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:doc_appoint/auth/auth.dart';
-import 'package:doc_appoint/auth/doc_signup.dart';
 import 'package:doc_appoint/pages/BottomNavBar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 
-class SignUpView extends StatefulWidget {
-  const SignUpView({Key? key}) : super(key: key);
+class patientDetails extends StatefulWidget {
+  DateTime? selectedDate;
+  String? selectedSlot;
+  patientDetails({Key? key,required this.selectedDate,required this.selectedSlot}) : super(key: key);
 
   @override
-  State<SignUpView> createState() => _SignUpViewState();
+  State<patientDetails> createState() => _patientDetailsState();
 }
 
-class _SignUpViewState extends State<SignUpView> {
+class _patientDetailsState extends State<patientDetails> {
   String? errorMessage = '';
 
   final TextEditingController controllerEmail = TextEditingController();
-  final TextEditingController controllerPassword = TextEditingController();
-  final TextEditingController controllerName = TextEditingController();
+  final TextEditingController controllerGender = TextEditingController();
+  final TextEditingController controllerFirstName = TextEditingController();
   final TextEditingController controllerMobile = TextEditingController();
   final TextEditingController controllerAge = TextEditingController();
-  final TextEditingController controllerAddress = TextEditingController();
+  final TextEditingController controllerLastName = TextEditingController();
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> createWithEmailAndPassword(BuildContext context) async {
+  Future<void> storeDetails(BuildContext context) async {
     try {
-      UserCredential userCredential= await _auth.createUserWithEmailAndPassword(
-        email: controllerEmail.text,
-        password: controllerPassword.text,
-      );
-
-      await _firestore.collection('User').doc(controllerEmail.text).set({
-        'Name': controllerName.text,
+      await _firestore.collection('Patient').doc().set({
+        'First Name': controllerFirstName.text,
+        'Last Name': controllerLastName.text,
         'Mobile': controllerMobile.text,
         'Age': controllerAge.text,
-        'Address': controllerAddress.text,
-        'Email': controllerEmail.text,
-        'UID': userCredential.user!.uid,
+        'Gender': controllerGender.text,
+        'Selected Date': widget.selectedDate?.toIso8601String(),
+        'Selected Slot': widget.selectedSlot,
       });
 
       // Navigate to HomePage on successful login
@@ -72,10 +68,10 @@ class _SignUpViewState extends State<SignUpView> {
   Widget submitButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        createWithEmailAndPassword(context);
+        storeDetails(context);
       },
       child: const Text(
-        'Sign Up',
+        'Book Appointment',
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
     );
@@ -95,57 +91,41 @@ class _SignUpViewState extends State<SignUpView> {
             Expanded(
               child: SingleChildScrollView(
                 child: Container(
-                 padding: EdgeInsets.only(
-                      top: 10,
-                      bottom: MediaQuery.of(context).viewInsets.bottom+140,
-                      left: 10,
-                      right: 10),
-                  //color: const Color.fromARGB(255, 108, 199, 242),
+                  height: MediaQuery.of(context).size.height,
+                  // padding: EdgeInsets.only(
+                  //     top: 10,
+                  //     bottom: MediaQuery.of(context).viewInsets.bottom + 140,
+                  //     left: 10,
+                  //     right: 10),
+                  padding: EdgeInsets.all(14),
+
                   decoration: const BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage('assets/doc-pat.jpg'),
-                        fit: BoxFit.cover),
+                    // image: DecorationImage(
+                    //     image: AssetImage('assets/doc-pat.jpg'),
+                    //     fit: BoxFit.cover),
+                    color: Color.fromARGB(255, 108, 199, 242),
                   ),
-                
+
                   child: Form(
                     child: Column(
                       children: <Widget>[
-                        entryField('Name', controllerName),
+                        entryField('First Name', controllerFirstName),
                         const SizedBox(height: 10),
-                        entryField('Mobile Number', controllerMobile),
+                        entryField('Last Name', controllerLastName),
                         const SizedBox(height: 10),
                         entryField('Age', controllerAge),
                         const SizedBox(height: 10),
-                        entryField('Address', controllerAddress),
+                        entryField('Gender', controllerGender),
                         const SizedBox(height: 10),
-                        entryField('Email', controllerEmail),
+                        entryField('Mobile Number', controllerMobile),
                         const SizedBox(height: 10),
-                        entryField('Password', controllerPassword),
+                        Text('Selected Date: ${widget.selectedDate != null ? DateFormat('EEE, MMM d').format(widget.selectedDate!) : 'No date selected'}'),
+                        Text('Selected Slot: ${widget.selectedSlot ?? 'No slot selected'}'),
                         _errorMessage(),
                         submitButton(context),
                         const SizedBox(
                           height: 10,
                         ),
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('Are you a Doctor? '),
-                          ],
-                        ),
-                        const SizedBox(height: 0),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DocSignUp(),
-                                  ));
-                            },
-                            child: const Text(
-                              'Register here',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ))
                       ],
                     ),
                   ),

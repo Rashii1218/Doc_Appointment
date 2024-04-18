@@ -21,14 +21,15 @@ class _DocSignUpState extends State<DocSignUp> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController expController = TextEditingController();
   final TextEditingController descController = TextEditingController();
+  final TextEditingController feesController = TextEditingController();
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> createDoctorAccount(BuildContext context) async {
     try {
-      
-      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
@@ -41,7 +42,8 @@ class _DocSignUpState extends State<DocSignUp> {
         'email': emailController.text,
         'uid': userCredential.user!.uid,
         'exp': expController,
-        'description':descController
+        'description': descController,
+        'fees': feesController
       });
 
       Navigator.push(
@@ -63,7 +65,8 @@ class _DocSignUpState extends State<DocSignUp> {
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         labelText: title,
-        labelStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        labelStyle:
+            const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -77,7 +80,8 @@ class _DocSignUpState extends State<DocSignUp> {
       onPressed: () {
         createDoctorAccount(context);
       },
-      child: const Text('Sign Up', style: TextStyle(fontWeight: FontWeight.bold)),
+      child:
+          const Text('Sign Up', style: TextStyle(fontWeight: FontWeight.bold)),
     );
   }
 
@@ -93,36 +97,43 @@ class _DocSignUpState extends State<DocSignUp> {
         child: Column(
           children: [
             Expanded(
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: const BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage('assets/doc-pat.jpg'),
-                    fit: BoxFit.cover,
+              child: SingleChildScrollView(
+                child: Container(
+                  padding: EdgeInsets.only(
+                      top: 10,
+                      bottom: MediaQuery.of(context).viewInsets.bottom+10,
+                      left: 10,
+                      right: 10),
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/doc-pat.jpg'),
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-                child: Form(
-                  child: Column(
-                    children: <Widget>[
-                      entryField('Name', nameController),
-                      const SizedBox(height: 10),
-                      entryField('Mobile Number', mobileController),
-                      const SizedBox(height: 10),
-                      entryField('Age', ageController),
-                      const SizedBox(height: 10),
-                      entryField('Speciality', specialityController),
-                      const SizedBox(height: 10),
-                      entryField('Email', emailController),
-                      const SizedBox(height: 10),
-                      entryField('Password', passwordController),
-                      const SizedBox(height: 10),
-                      entryField('Experience', expController),
-                      const SizedBox(height: 10),
-                      entryField('Description', descController),
-                      
-                      _errorMessage(),
-                      submitButton(context),
-                    ],
+                  child: Form(
+                    child: Column(
+                      children: <Widget>[
+                        entryField('Name', nameController),
+                        const SizedBox(height: 10),
+                        entryField('Mobile Number', mobileController),
+                        const SizedBox(height: 10),
+                        entryField('Age', ageController),
+                        const SizedBox(height: 10),
+                        entryField('Speciality', specialityController),
+                        const SizedBox(height: 10),
+                        entryField('Email', emailController),
+                        const SizedBox(height: 10),
+                        entryField('Password', passwordController),
+                        const SizedBox(height: 10),
+                        entryField('Experience', expController),
+                        const SizedBox(height: 10),
+                        entryField('Description', descController),
+                        const SizedBox(height: 10),
+                        entryField('Consultation Fees', feesController),
+                        _errorMessage(),
+                        submitButton(context),
+                      ],
+                    ),
                   ),
                 ),
               ),

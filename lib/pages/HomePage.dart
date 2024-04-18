@@ -290,6 +290,12 @@ class _HomePageState extends State<HomePage> {
                                         style: const TextStyle(
                                             color: Colors.white, fontSize: 14),
                                       ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        doc['mobileNumber'],
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 14),
+                                      ),
                                     ],
                                   ),
                                 ],
