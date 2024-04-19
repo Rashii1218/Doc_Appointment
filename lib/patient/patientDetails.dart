@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doc_appoint/pages/BottomNavBar.dart';
+import 'package:doc_appoint/patient/BookedAppointments.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
@@ -7,7 +10,14 @@ import 'package:intl/intl.dart';
 class patientDetails extends StatefulWidget {
   DateTime? selectedDate;
   String? selectedSlot;
-  patientDetails({Key? key,required this.selectedDate,required this.selectedSlot}) : super(key: key);
+  String? doctUid;
+
+  patientDetails(
+      {Key? key,
+      required this.selectedDate,
+      required this.selectedSlot,
+      required this.doctUid})
+      : super(key: key);
 
   @override
   State<patientDetails> createState() => _patientDetailsState();
@@ -24,6 +34,8 @@ class _patientDetailsState extends State<patientDetails> {
   final TextEditingController controllerLastName = TextEditingController();
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  String? _currentUserId;
 
   Future<void> storeDetails(BuildContext context) async {
     try {
@@ -33,11 +45,11 @@ class _patientDetailsState extends State<patientDetails> {
         'Mobile': controllerMobile.text,
         'Age': controllerAge.text,
         'Gender': controllerGender.text,
-        'Selected Date': widget.selectedDate?.toIso8601String(),
+        'Selected Date': widget.selectedDate?.toString(),
         'Selected Slot': widget.selectedSlot,
+        'Patient Uid': _currentUserId
       });
 
-      // Navigate to HomePage on successful login
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const BottomNavBar()),
@@ -69,6 +81,8 @@ class _patientDetailsState extends State<patientDetails> {
     return ElevatedButton(
       onPressed: () {
         storeDetails(context);
+        BookedAppointments();
+        debugPrint(widget.doctUid);
       },
       child: const Text(
         'Book Appointment',
@@ -78,10 +92,24 @@ class _patientDetailsState extends State<patientDetails> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _getCurrentUserId();
+  }
+
+  void _getCurrentUserId() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      _currentUserId = user.uid;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 108, 199, 242),
         title: const Text('Welcome'),
       ),
       body: Container(
@@ -118,14 +146,30 @@ class _patientDetailsState extends State<patientDetails> {
                         entryField('Gender', controllerGender),
                         const SizedBox(height: 10),
                         entryField('Mobile Number', controllerMobile),
-                        const SizedBox(height: 10),
-                        Text('Selected Date: ${widget.selectedDate != null ? DateFormat('EEE, MMM d').format(widget.selectedDate!) : 'No date selected'}'),
-                        Text('Selected Slot: ${widget.selectedSlot ?? 'No slot selected'}'),
+                        const SizedBox(height: 25),
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                                'Selected Date:  ${widget.selectedDate != null ? DateFormat('EEE, MMM d').format(widget.selectedDate!) : 'No date selected'}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Color.fromRGBO(21, 101, 192, 1),
+                                ))),
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                                'Selected Slot:  ${widget.selectedSlot ?? 'No slot selected'}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  color: Color.fromRGBO(21, 101, 192, 1),
+                                ))),
                         _errorMessage(),
-                        submitButton(context),
-                        const SizedBox(
-                          height: 10,
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height / 10,
                         ),
+                        submitButton(context),
                       ],
                     ),
                   ),

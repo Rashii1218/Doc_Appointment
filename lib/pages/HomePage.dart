@@ -153,7 +153,8 @@ class _HomePageState extends State<HomePage> {
                         _firestore
                             .collection('Doctor')
                             .where('speciality',
-                                isLessThanOrEqualTo: cards[index].doctor)
+                                isLessThanOrEqualTo: cards[index].speciality).where('speciality',
+                                isGreaterThanOrEqualTo: cards[index].speciality )
                             .get()
                             .then((querysnapshot) {
                           specialityDoc = querysnapshot.docs;
@@ -200,7 +201,7 @@ class _HomePageState extends State<HomePage> {
                           Container(
                             alignment: Alignment.bottomCenter,
                             child: Text(
-                              cards[index].doctor,
+                              cards[index].speciality,
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
@@ -287,12 +288,6 @@ class _HomePageState extends State<HomePage> {
                                       const SizedBox(height: 2),
                                       Text(
                                         doc['speciality'],
-                                        style: const TextStyle(
-                                            color: Colors.white, fontSize: 14),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(
-                                        doc['mobileNumber'],
                                         style: const TextStyle(
                                             color: Colors.white, fontSize: 14),
                                       ),

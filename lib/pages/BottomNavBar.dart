@@ -1,5 +1,7 @@
 import "package:doc_appoint/pages/HomePage.dart";
 import "package:doc_appoint/pages/prescription.dart";
+import "package:doc_appoint/patient/BookedAppointments.dart";
+import "package:doc_appoint/patient/medicinetracker.dart";
 import "package:flutter/material.dart";
 
 class BottomNavBar extends StatefulWidget {
@@ -27,7 +29,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
         controller: pageController,
         children: [
           const HomePage(),
-          PrescriptionPage(),
+          BookedAppointments(),
+          MedicineTrackerPage(),
           PrescriptionPage(),
           const HomePage(),
         ],
@@ -41,6 +44,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
             BottomNavigationBarItem(
               label: 'Home',
               icon: Icon(Icons.home),
+            ),
+            BottomNavigationBarItem(
+              label: 'Appointments',
+              icon: Icon(Icons.list,size: 32,),
             ),
             BottomNavigationBarItem(
               label: 'Medicine\nTracker',

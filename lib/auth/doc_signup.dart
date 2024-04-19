@@ -41,9 +41,9 @@ class _DocSignUpState extends State<DocSignUp> {
         'speciality': specialityController.text,
         'email': emailController.text,
         'uid': userCredential.user!.uid,
-        'exp': expController,
-        'description': descController,
-        'fees': feesController
+        'exp': expController.text,
+        'description': descController.text,
+        'fees': feesController.text,
       });
 
       Navigator.push(

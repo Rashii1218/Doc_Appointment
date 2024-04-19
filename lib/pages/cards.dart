@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:tabler_icons/tabler_icons.dart';
 
 class CardModel {
-  String doctor;
+  String speciality;
   int cardBackground;
   var cardIcon;
 
-  CardModel(this.doctor, this.cardBackground, this.cardIcon);
+  CardModel(this.speciality, this.cardBackground, this.cardIcon);
 }
 
 List<CardModel> cards = [
