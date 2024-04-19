@@ -27,7 +27,8 @@ class _SignUpViewState extends State<SignUpView> {
 
   Future<void> createWithEmailAndPassword(BuildContext context) async {
     try {
-      UserCredential userCredential= await _auth.createUserWithEmailAndPassword(
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
         email: controllerEmail.text,
         password: controllerPassword.text,
       );
@@ -95,9 +96,9 @@ class _SignUpViewState extends State<SignUpView> {
             Expanded(
               child: SingleChildScrollView(
                 child: Container(
-                 padding: EdgeInsets.only(
+                  padding: EdgeInsets.only(
                       top: 10,
-                      bottom: MediaQuery.of(context).viewInsets.bottom+140,
+                      bottom: MediaQuery.of(context).viewInsets.bottom + 140,
                       left: 10,
                       right: 10),
                   //color: const Color.fromARGB(255, 108, 199, 242),
@@ -106,7 +107,7 @@ class _SignUpViewState extends State<SignUpView> {
                         image: AssetImage('assets/doc-pat.jpg'),
                         fit: BoxFit.cover),
                   ),
-                
+
                   child: Form(
                     child: Column(
                       children: <Widget>[
