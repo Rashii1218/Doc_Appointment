@@ -45,7 +45,8 @@ class _patientDetailsState extends State<patientDetails> {
         'Gender': controllerGender.text,
         'Selected Date': widget.selectedDate.toString(),
         'Selected Slot': widget.selectedSlot,
-        'Patient Uid': _currentUserId
+        'Patient Uid': _currentUserId,
+        'Doctor UID': widget.doctUid
       }).then(
         (value) {
           // BookedAppointments();

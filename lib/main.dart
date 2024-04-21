@@ -14,7 +14,8 @@ void main() async {
   );
   User? user = FirebaseAuth.instance.currentUser;
 
-  runApp( GetMaterialApp(
+  runApp( 
+    GetMaterialApp(
      debugShowCheckedModeBanner: false,
       home: user != null ? BottomNavBar() : const LoginView(),
   ));
