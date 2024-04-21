@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class BookedAppointments extends StatefulWidget {
-  BookedAppointments({super.key});
+  const BookedAppointments({super.key});
 
   @override
   State<BookedAppointments> createState() => _BookedAppointmenState();
