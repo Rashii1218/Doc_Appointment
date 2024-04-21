@@ -1,12 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class BookedAppointments extends StatefulWidget {
-  BookedAppointments({
-    super.key,
-  });
+  BookedAppointments({super.key});
 
   @override
   State<BookedAppointments> createState() => _BookedAppointmenState();
@@ -42,6 +39,43 @@ class _BookedAppointmenState extends State<BookedAppointments> {
     return Text(errorMessage == '' ? '' : '$errorMessage');
   }
 
+  bool _isAppointmentPassed(String appointmentDate, String appointmentTime) {
+    try {
+      final selectedDate = DateTime.parse(appointmentDate);
+      final now = DateTime.now();
+      final timeParts = appointmentTime.split('-');
+
+      if (timeParts.length != 2) {
+        // Invalid time format
+        return false;
+      }
+
+      final startTime = timeParts[0].trim();
+      final endTime = timeParts[1].trim();
+
+      final start = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        int.parse(startTime.split(':')[0]),
+        int.parse(startTime.split(':')[1]),
+      );
+      final end = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        int.parse(endTime.split(':')[0]),
+        int.parse(endTime.split(':')[1]),
+      );
+
+      return now.isAfter(end);
+    } catch (e) {
+      // Handle parsing errors
+      debugPrint('Error: $e');
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,42 +86,73 @@ class _BookedAppointmenState extends State<BookedAppointments> {
       body: Container(
         padding: const EdgeInsets.all(10),
         child: StreamBuilder(
-            stream: firestore
-                .collection('Patient')
-                .where('Patient Uid', isEqualTo: _user?.uid)
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.active) {
-                if (snapshot.hasData) {
-                  PatDetails = snapshot.data!.docs.toList();
-                  return ListView.builder(
-                    itemCount: PatDetails.length,
-                    itemBuilder: (context, index) {
-                      final patient = PatDetails[index].data();
-                      return Card(
-                        color: Colors.blue[100],
-                        child: ListTile(
+          stream: firestore
+              .collection('Patient')
+              .where('Patient Uid', isEqualTo: _user?.uid)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.active) {
+              if (snapshot.hasData) {
+                PatDetails = snapshot.data!.docs.toList();
+                return ListView.builder(
+                  itemCount: PatDetails.length,
+                  itemBuilder: (context, index) {
+                    final patient = PatDetails[index].data();
+                    final isAppointmentPassed = _isAppointmentPassed(
+                        patient['Selected Date'], patient['Selected Slot']);
+                    List<String> dismissedItems = [];
+
+                    return Dismissible(
+                        onDismissed: (direction) {
+                          dismissedItems.add(patient.toString());
+                          firestore
+                              .collection('Patient')
+                              .doc(PatDetails[index].id)
+                              .delete();
+                          setState(() {
+                            PatDetails.removeAt(index);
+                          });
+                          if (DismissDirection.startToEnd == direction) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Deleted'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        },
+                        key: Key(patient.toString()),
+                        child: Card(
+                          color: Colors.blue[100],
+                          child: ListTile(
                             title: Text(
-                                'Name: ${patient['First Name']} ${patient['Last Name']}'),
+                              'Name: ${patient['First Name']} ${patient['Last Name']}',
+                            ),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text('Date: ${patient['Selected Date']}'),
                                 Text('Slot: ${patient['Selected Slot']}'),
                               ],
-                            )),
-                      );
-                    },
-                  );
-                } else if (snapshot.hasError) {
-                  return Text('${snapshot.hasError.toString()}');
-                } else {
-                  return Text('No data found');
-                }
+                            ),
+                            trailing: isAppointmentPassed
+                                ? const Icon(Icons.check, color: Colors.green)
+                                : null,
+                          ),
+                        ));
+                    
+                  },
+                );
+              } else if (snapshot.hasError) {
+                return Text('$snapshot.hasError.toString()');
               } else {
-                return CircularProgressIndicator();
+                return const Text('No data found');
               }
-            }),
+            } else {
+              return const CircularProgressIndicator();
+            }
+          },
+        ),
       ),
     );
   }
