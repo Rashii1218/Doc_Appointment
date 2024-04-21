@@ -40,7 +40,7 @@ class _LoginViewState extends State<LoginView> {
       } else {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const BottomNavBar()),
+          MaterialPageRoute(builder: (context) => BottomNavBar()),
         );
       }
     } on FirebaseAuthException catch (e) {

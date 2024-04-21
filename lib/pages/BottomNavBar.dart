@@ -1,9 +1,10 @@
 import "package:doc_appoint/pages/HomePage.dart";
 import "package:doc_appoint/pages/prescription.dart";
 import "package:flutter/material.dart";
+import 'package:doc_appoint/patient/medicinetracker.dart';
 
 class BottomNavBar extends StatefulWidget {
-  const BottomNavBar({super.key});
+   BottomNavBar({super.key});
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
@@ -27,7 +28,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         controller: pageController,
         children: [
           const HomePage(),
-          PrescriptionPage(),
+          MedicineTrackerPage(),
           PrescriptionPage(),
           const HomePage(),
         ],

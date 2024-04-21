@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:doc_appoint/auth/login_view.dart';
 import 'package:doc_appoint/pages/cards.dart';
 import 'package:doc_appoint/utils/utils.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -262,12 +264,43 @@ class _HomePageState extends State<HomePage> {
                               height: MediaQuery.of(context).size.height / 9,
                               child: Row(
                                 children: [
-                                  const CircleAvatar(
-                                    backgroundImage:
-                                        AssetImage('assets/doctor.jpg'),
-                                    backgroundColor: Colors.blue,
-                                    radius: 30,
-                                  ),
+                                  FutureBuilder(
+  future: FirebaseStorage.instance
+      .ref()
+      .child('DoctorImages/${doc['email']}.jpg')
+      .getDownloadURL(),
+  builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.done) {
+      if (snapshot.hasError) {
+        return CircleAvatar(
+          backgroundImage: AssetImage('assets/doctor.jpg'),
+          backgroundColor: Colors.blue,
+          radius: 30,
+        );
+      } else if (snapshot.hasData) {
+        return CircleAvatar(
+          backgroundImage: NetworkImage(snapshot.data.toString()),
+          radius: 30,
+        );
+      } else {
+        return CircleAvatar(
+          backgroundImage: AssetImage('assets/doctor.jpg'),
+          backgroundColor: Colors.blue,
+          radius: 30,
+        );
+      }
+    } else {
+      return CircleAvatar(
+        backgroundImage: AssetImage('assets/doctor.jpg'),
+        backgroundColor: Colors.blue,
+        radius: 30,
+      );
+    }
+  },
+),
+
+
+                                  
                                   const SizedBox(
                                     width: 20,
                                   ),

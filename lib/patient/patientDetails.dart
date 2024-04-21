@@ -40,7 +40,7 @@ class _patientDetailsState extends State<patientDetails> {
       // Navigate to HomePage on successful login
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const BottomNavBar()),
+        MaterialPageRoute(builder: (context) =>  BottomNavBar()),
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
