@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doc_appoint/patient/patientDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -16,28 +16,28 @@ class _book_appointmentState extends State<book_appointment> {
   String? selectedSlot;
 
   List<String> morningSlots = [
-    '8:00-8:30 ',
-    '8:30-9:00 ',
-    '9:00-9:30 ',
-    '9:30-10:00 ',
-    '10:00-10:30 ',
-    '10:30-11:00 '
+    '8:00 - 8:30 ',
+    '8:30 - 9:00 ',
+    '9:00 - 9:30 ',
+    '9:30 - 10:00 ',
+    '10:00 - 10:30 ',
+    '10:30 - 11:00 '
   ];
   List<String> afternoonSlots = [
-    '11:00-11:30 ',
-    '11:30-12:00 ',
-    '12:00-12:30 ',
-    '12:30-1:00 ',
-    '4:00-4:30 ',
-    '4:30-5:00 '
+    '11:00 - 11:30 ',
+    '11:30 - 12:00 ',
+    '12:00 - 12:30 ',
+    '12:30 - 13:00 ',
+    '16:00 - 16:30 ',
+    '16:30 - 17:00 '
   ];
   List<String> eveningSlots = [
-    '5:00-5:30 ',
-    '5:30-6:00 ',
-    '6:00-6:30 ',
-    '6:30-7:00 ',
-    '7:00-7:30 ',
-    '7:30-8:00 '
+    '17:00 - 17:30 ',
+    '17:30 - 18:00 ',
+    '18:00 - 18:30 ',
+    '18:30 - 19:00 ',
+    '19:00 - 19:30 ',
+    '19:30 - 20:00 '
   ];
 
   @override
@@ -56,9 +56,7 @@ class _book_appointmentState extends State<book_appointment> {
         appBar: AppBar(
           title: const Text('Book Appointment'),
           backgroundColor: const Color.fromARGB(255, 108, 199, 242),
-          bottom: TabBar(
-            indicatorColor:Colors.black ,
-            tabs: [
+          bottom: TabBar(indicatorColor: Colors.black, tabs: [
             Tab(
               text: formatNow,
             ),
@@ -70,32 +68,42 @@ class _book_appointmentState extends State<book_appointment> {
             ),
           ]),
         ),
-        body: TabBarView(
-          children: [
+        body: TabBarView(children: [
           SingleChildScrollView(
             child: Column(
               children: [
-                booking(now, morningSlots, 'Morning', widget.doctorUID,context),
-                booking(now, afternoonSlots, 'Afternoon',  widget.doctorUID,context),
-                booking(now, eveningSlots, 'Evening',  widget.doctorUID,context)
+                const SizedBox(
+                  height: 10,
+                ),
+                booking(
+                    now, morningSlots, 'Morning', widget.doctorUID, context),
+                booking(now, afternoonSlots, 'Afternoon', widget.doctorUID,
+                    context),
+                booking(now, eveningSlots, 'Evening', widget.doctorUID, context)
               ],
             ),
           ),
           SingleChildScrollView(
             child: Column(
               children: [
-                booking(secondDay, morningSlots, 'Morning', widget.doctorUID, context),
-                booking(secondDay, afternoonSlots, 'Afternoon',  widget.doctorUID,context),
-                booking(secondDay, eveningSlots, 'Evening', widget.doctorUID, context)
+                booking(secondDay, morningSlots, 'Morning', widget.doctorUID,
+                    context),
+                booking(secondDay, afternoonSlots, 'Afternoon',
+                    widget.doctorUID, context),
+                booking(secondDay, eveningSlots, 'Evening', widget.doctorUID,
+                    context)
               ],
             ),
           ),
           SingleChildScrollView(
             child: Column(
               children: [
-                booking(thirdDay, morningSlots, 'Morning', widget.doctorUID, context),
-                booking(thirdDay, afternoonSlots, 'Afternoon',  widget.doctorUID,context),
-                booking(thirdDay, eveningSlots, 'Evening', widget.doctorUID, context)
+                booking(thirdDay, morningSlots, 'Morning', widget.doctorUID,
+                    context),
+                booking(thirdDay, afternoonSlots, 'Afternoon', widget.doctorUID,
+                    context),
+                booking(thirdDay, eveningSlots, 'Evening', widget.doctorUID,
+                    context)
               ],
             ),
           )
@@ -105,9 +113,8 @@ class _book_appointmentState extends State<book_appointment> {
   }
 }
 
-Future<dynamic> showAlert(
-    BuildContext context, DateTime? selectedDate, String? selectedSlot,String doctorUID) {
-  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+Future<dynamic> showAlert(BuildContext context, DateTime? selectedDate,
+    String? selectedSlot, String doctorUID) {
   return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -117,7 +124,7 @@ Future<dynamic> showAlert(
             child: ListBody(
               children: [
                 Text(
-                    'Selected Date: ${selectedDate != null ? DateFormat('EEE, MMM d').format(selectedDate!) : 'No date selected'}'),
+                    'Selected Date: ${selectedDate != null ? DateFormat('EEE, MMM d').format(selectedDate) : 'No date selected'}'),
                 Text('Selected Slot: ${selectedSlot ?? 'No slot selected'}'),
               ],
             ),
@@ -147,11 +154,38 @@ Future<dynamic> showAlert(
       });
 }
 
-Widget booking(DateTime selectedDate, List<String> slot, String time,String doctorUID,
-    BuildContext context) {
+Widget booking(DateTime selectedDate, List<String> slot, String time,
+    String doctorUID, BuildContext context) {
   String selectedSlot;
+  bool isAppointmentPassed(DateTime appointmentDate, String appointmentTime) {
+    try {
+      final now = DateTime.now();
+      final timeParts = appointmentTime.split('-');
+
+      if (timeParts.length != 2) {
+        return false;
+      }
+
+      final endTime = timeParts[1].trim();
+
+      final end = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        int.parse(endTime.split(':')[0]),
+        int.parse(endTime.split(':')[1]),
+      );
+
+      return now.isAfter(end);
+    } catch (e) {
+      // Handle parsing errors
+      debugPrint('Error: $e');
+      return false;
+    }
+  }
+
   return Card(
-    margin: EdgeInsets.all(15),
+    margin: const EdgeInsets.all(15),
     color: Colors.blue[50],
     child: Column(
       children: [
@@ -170,17 +204,30 @@ Widget booking(DateTime selectedDate, List<String> slot, String time,String doct
           height: 20,
         ),
         Wrap(
-          spacing: 8,
-          runSpacing: 5,
+          spacing: 10,
+          runSpacing: 10,
           children: [
             for (int i = 0; i < slot.length; i++)
               ElevatedButton(
-                  onPressed: () {
-                    selectedDate = selectedDate;
-                    selectedSlot = slot[i];
-                    showAlert(context, selectedDate, selectedSlot,doctorUID);
-                  },
+                  onPressed: isAppointmentPassed(selectedDate, slot[i])
+                      ? null
+                      : () {
+                          selectedDate = selectedDate;
+                          selectedSlot = slot[i];
+                          showAlert(
+                              context, selectedDate, selectedSlot, doctorUID);
+                        },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor:const Color.fromARGB(223, 138, 176, 251),
+                      foregroundColor:Colors.white,
+                      disabledBackgroundColor: Colors.grey[400],
+                      disabledForegroundColor: Colors.black
+                      ),
                   child: Text(slot[i])),
+            Container(
+              height: 10,
+              color: Colors.blue[50],
+            )
           ],
         ),
       ],

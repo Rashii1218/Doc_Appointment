@@ -29,7 +29,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         controller: pageController,
         children: [
           const HomePage(),
-          BookedAppointments(),
+          const BookedAppointments(),
           MedicineTrackerPage(),
           PrescriptionPage(),
           const HomePage(),

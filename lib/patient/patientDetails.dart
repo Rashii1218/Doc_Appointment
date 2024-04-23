@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doc_appoint/pages/BottomNavBar.dart';
 import 'package:doc_appoint/patient/BookedAppointments.dart';
@@ -8,9 +6,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
 class patientDetails extends StatefulWidget {
-  DateTime? selectedDate;
-  String? selectedSlot;
-  String? doctUid;
+  final DateTime? selectedDate;
+  final String? selectedSlot;
+  final String? doctUid;
 
   patientDetails(
       {Key? key,
@@ -45,14 +43,18 @@ class _patientDetailsState extends State<patientDetails> {
         'Mobile': controllerMobile.text,
         'Age': controllerAge.text,
         'Gender': controllerGender.text,
-        'Selected Date': widget.selectedDate?.toString(),
+        'Selected Date': widget.selectedDate.toString(),
         'Selected Slot': widget.selectedSlot,
-        'Patient Uid': _currentUserId
-      });
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const BottomNavBar()),
+        'Patient Uid': _currentUserId,
+        'Doctor UID': widget.doctUid
+      }).then(
+        (value) {
+          // BookedAppointments();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const BottomNavBar()),
+          );
+        },
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -81,8 +83,6 @@ class _patientDetailsState extends State<patientDetails> {
     return ElevatedButton(
       onPressed: () {
         storeDetails(context);
-        BookedAppointments();
-        debugPrint(widget.doctUid);
       },
       child: const Text(
         'Book Appointment',
@@ -125,7 +125,7 @@ class _patientDetailsState extends State<patientDetails> {
                   //     bottom: MediaQuery.of(context).viewInsets.bottom + 140,
                   //     left: 10,
                   //     right: 10),
-                  padding: EdgeInsets.all(14),
+                  padding: const EdgeInsets.all(14),
 
                   decoration: const BoxDecoration(
                     // image: DecorationImage(

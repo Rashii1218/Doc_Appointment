@@ -41,7 +41,7 @@ class _SearchDocState extends State<SearchDoc> {
                   height: MediaQuery.of(context).size.height / 12,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Color.fromARGB(255, 148, 215, 246),
+                    color: const Color.fromARGB(255, 148, 215, 246),
                   ),
                   child: Row(
                     children: [
