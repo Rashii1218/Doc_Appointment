@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:doc_appoint/doctor/doc_homepage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 
 class DocSignUp extends StatefulWidget {
   const DocSignUp({Key? key}) : super(key: key);
@@ -26,8 +29,46 @@ class _DocSignUpState extends State<DocSignUp> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  final ImagePicker _picker = ImagePicker();
+XFile? _imageFile;
+String? _uploadedFileURL;
+Reference referenceRoot=FirebaseStorage.instance.ref();
+//Reference referenceDirImages=referenceRoot.child('images');
+
+Future<void> _pickImage() async {
+  final XFile? pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+  setState(() {
+    if (pickedFile != null) {
+      _imageFile = pickedFile;
+    } else {
+      print('No image selected.');
+    }
+  });
+}
+
+Future<void> _uploadImage() async {
+  Reference storageReference = FirebaseStorage.instance.ref().child('doctor_profile_pictures/${DateTime.now().millisecondsSinceEpoch.toString()}.jpg');
+  UploadTask uploadTask = storageReference.putFile(File(_imageFile!.path));
+  await uploadTask.whenComplete(() async {
+    await storageReference.getDownloadURL().then((fileURL) {
+      setState(() {
+        _uploadedFileURL = fileURL;
+      });
+    });
+  });
+}
+
+
+
+
+
+
   Future<void> createDoctorAccount(BuildContext context) async {
     try {
+      if (_imageFile != null) {
+      await _uploadImage();
+    }
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: emailController.text,
@@ -35,6 +76,7 @@ class _DocSignUpState extends State<DocSignUp> {
       );
 
       await _firestore.collection('Doctor').doc(emailController.text).set({
+        
         'name': nameController.text,
         'mobileNumber': mobileController.text,
         'age': ageController.text,
@@ -44,6 +86,7 @@ class _DocSignUpState extends State<DocSignUp> {
         'exp': expController.text,
         'description': descController.text,
         'fees': feesController.text,
+        'image upload':_uploadedFileURL,
       });
 
       Navigator.push(
@@ -113,6 +156,25 @@ class _DocSignUpState extends State<DocSignUp> {
                   child: Form(
                     child: Column(
                       children: <Widget>[
+                        GestureDetector(
+              onTap: _pickImage,
+              child: CircleAvatar(
+                radius: 50,
+                backgroundColor: Colors.grey[200],
+                backgroundImage: _imageFile == null
+                    ? null
+                    : FileImage(File(_imageFile!.path)),
+                child: _imageFile == null
+                    ? Icon(
+                        Icons.add_a_photo,
+                        size: 40,
+                        color: Colors.grey[800],
+                      )
+                    : null,
+              ),
+            ),
+            
+            const SizedBox(height: 10),
                         entryField('Name', nameController),
                         const SizedBox(height: 10),
                         entryField('Mobile Number', mobileController),

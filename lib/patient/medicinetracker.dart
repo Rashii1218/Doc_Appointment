@@ -1,91 +1,3 @@
-// import 'package:flutter/material.dart';
-
-// class MedicineTrackerPage extends StatefulWidget {
-//   @override
-//   _MedicineTrackerPageState createState() => _MedicineTrackerPageState();
-// }
-
-// class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
-//   // Sample list of medicines with reminders
-//   final List<Map<String, dynamic>> medicines = [
-//     {'name': 'Medicine A', 'reminder': null},
-//     {'name': 'Medicine B', 'reminder': null},
-//     {'name': 'Medicine C', 'reminder': null},
-//     {'name': 'Medicine D', 'reminder': null},
-//     {'name': 'Medicine E', 'reminder': null},
-//   ];
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Medicine Tracker'),
-//       ),
-//       body: ListView.builder(
-//         itemCount: medicines.length,
-//         itemBuilder: (context, index) {
-//           return ListTile(
-//             title: Text(medicines[index]['name']),
-//             subtitle: medicines[index]['reminder'] == null
-//                 ? Text('No reminder set')
-//                 : Text(
-//                     'Reminder set for ${medicines[index]['reminder']['date']} at ${medicines[index]['reminder']['time']}'),
-//             trailing: Icon(Icons.alarm),
-//             onTap: () async {
-//               await _showReminderDialog(index);
-//             },
-//           );
-//         },
-//       ),
-//       floatingActionButton: FloatingActionButton(
-//         child: Icon(Icons.add),
-//         onPressed: () {
-//           // Add new medicine or perform any action
-//           print('Add new medicine');
-//         },
-//       ),
-//     );
-//   }
-
-//   Future<void> _showReminderDialog(int index) async {
-//     DateTime? selectedDate = medicines[index]['reminder'] != null
-//         ? medicines[index]['reminder']['date']
-//         : DateTime.now();
-//     TimeOfDay? selectedTime = medicines[index]['reminder'] != null
-//         ? TimeOfDay.fromDateTime(medicines[index]['reminder']['date'])
-//         : TimeOfDay.now();
-
-//     DateTime? pickedDate = await showDatePicker(
-//       context: context,
-//       initialDate: selectedDate!,
-//       firstDate: DateTime.now(),
-//       lastDate: DateTime(2100),
-//     );
-
-//     if (pickedDate != null) {
-//       TimeOfDay? pickedTime = await showTimePicker(
-//         context: context,
-//         initialTime: selectedTime!,
-//       );
-
-//       if (pickedTime != null) {
-//         setState(() {
-//           medicines[index]['reminder'] = {
-//             'date': DateTime(
-//               pickedDate.year,
-//               pickedDate.month,
-//               pickedDate.day,
-//               pickedTime.hour,
-//               pickedTime.minute,
-//             ),
-//             'time': pickedTime.format(context),
-//           };
-//         });
-//       }
-//     }
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
@@ -96,59 +8,67 @@ class MedicineTrackerPage extends StatefulWidget {
   _MedicineTrackerPageState createState() => _MedicineTrackerPageState();
 }
 
-class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-  String? selectedMedicineType;
+class _Medicine {
+  String? medicineType;
   String medicineName = '';
   DateTime? startDate;
   DateTime? endDate;
   List<bool> selectedDays = [false, false, false, false, false, false, false];
   TimeOfDay? reminderTime;
+}
+
+class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  List<_Medicine> medicines = [];
+  List<String> savedMedicines = [];
 
   @override
   void initState() {
     super.initState();
     var initializationSettingsAndroid =
         const AndroidInitializationSettings('app_icon');
-    // var initializationSettingsIOS = IOSInitializationSettings(
-    //     requestAlertPermission: true,
-    //     requestBadgePermission: true,
-    //     requestSoundPermission: true,
-    //     onDidReceiveLocalNotification:
-    //         (int? id, String? title, String? body, String? payload) async {});
-    var initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid, );
+    var initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
     flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  Future<void> _scheduleNotification() async {
-    var time = TimeOfDay(hour: reminderTime!.hour, minute: reminderTime!.minute);
+   Future<void> _scheduleNotification(String medicineName) async {
+    var medicine = medicines.firstWhere((m) => m.medicineName == medicineName);
+    var time = TimeOfDay(
+        hour: medicine.reminderTime!.hour, minute: medicine.reminderTime!.minute);
     var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
       'medicine_notification',
       'Medicine Reminder',
       importance: Importance.max,
       priority: Priority.high,
     );
-    //var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(
-        android: androidPlatformChannelSpecifics,
-        );
+      android: androidPlatformChannelSpecifics,
+    );
     await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        'Time to take $medicineName',
-        'Remember to take your $selectedMedicineType: $medicineName',
-        tz.TZDateTime.now(tz.local).add(Duration(seconds: 5)),
-        platformChannelSpecifics,
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime);
+      medicines.indexOf(medicine),
+      'Time to take ${medicine.medicineName}',
+      'Remember to take your ${medicine.medicineType}: ${medicine.medicineName}',
+      tz.TZDateTime.now(tz.local).add(Duration(seconds: 5)),
+      platformChannelSpecifics,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+    );
   }
-
+void _saveMedicine(_Medicine medicine) {
+    if (!savedMedicines.contains(medicine.medicineName)) {
+      setState(() {
+        savedMedicines.add(medicine.medicineName);
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue[300],
         title: Text('Medicine Tracker'),
       ),
       body: Padding(
@@ -157,14 +77,81 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              ElevatedButton(
+                onPressed: () async {
+                  final newMedicine = _Medicine();
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddMedicinePage(
+                        medicine: newMedicine,
+                        scheduleNotificationCallback: _scheduleNotification,
+                      ),
+                    ),
+                  );
+                  if (newMedicine.medicineName.isNotEmpty) {
+                    setState(() {
+                      medicines.add(newMedicine);
+                      _saveMedicine(newMedicine);
+                    });
+                  }
+                },
+                child: Text('Add Medicine'),
+
+              ),
+              SizedBox(height: 20),
+              Text('Saved Medicines:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: savedMedicines.map((medicineName) {
+                  return Text(medicineName);
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AddMedicinePage extends StatefulWidget {
+  final _Medicine medicine;
+  final Function(String) scheduleNotificationCallback;
+
+  AddMedicinePage({required this.medicine, required this.scheduleNotificationCallback});
+
+  @override
+  _AddMedicinePageState createState() => _AddMedicinePageState();
+}
+
+class _AddMedicinePageState extends State<AddMedicinePage> {
+  DateTime? startDate;
+  DateTime? endDate;
+  List<bool> selectedDays = [false, false, false, false, false, false, false];
+  TimeOfDay? reminderTime;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Add Medicine'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
               DropdownButton<String>(
-                value: selectedMedicineType,
+                value: widget.medicine.medicineType,
                 hint: Text('Select Medicine Type'),
                 onChanged: (String? newValue) {
                   setState(() {
-                    selectedMedicineType = newValue;
+                    widget.medicine.medicineType = newValue;
                   });
                 },
+                
                 items: <String>['Pills', 'Syrup', 'Tablets', 'Others']
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
@@ -179,7 +166,7 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
                   labelText: 'Medicine Name',
                 ),
                 onChanged: (value) {
-                  medicineName = value;
+                  widget.medicine.medicineName = value;
                 },
               ),
               SizedBox(height: 20),
@@ -195,7 +182,7 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
                         firstDate: DateTime.now(),
                         lastDate: DateTime(2101),
                       );
-                      if (picked != null && picked != startDate)
+                      if (picked != null)
                         setState(() {
                           startDate = picked;
                         });
@@ -217,7 +204,7 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
                         firstDate: DateTime.now(),
                         lastDate: DateTime(2101),
                       );
-                      if (picked != null && picked != endDate)
+                      if (picked != null)
                         setState(() {
                           endDate = picked;
                         });
@@ -230,13 +217,13 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
               Text('Select Days:'),
               Wrap(
                 spacing: 10,
-                children: List.generate(7, (index) {
+                children: List.generate(7, (dayIndex) {
                   return FilterChip(
-                    label: Text(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index]),
-                    selected: selectedDays[index],
+                    label: Text(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][dayIndex]),
+                    selected: selectedDays[dayIndex],
                     onSelected: (bool selected) {
                       setState(() {
-                        selectedDays[index] = selected;
+                        selectedDays[dayIndex] = selected;
                       });
                     },
                   );
@@ -265,7 +252,8 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  _scheduleNotification();
+                  widget.scheduleNotificationCallback(widget.medicine.medicineName);
+                  Navigator.pop(context);
                 },
                 child: Text('Set Reminder'),
               ),
@@ -276,3 +264,6 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
     );
   }
 }
+
+              
+              

@@ -27,9 +27,9 @@ class _DocDetailsState extends State<DocDetails> {
             Container(
               height: MediaQuery.of(context).size.height / 3,
               // color: Colors.red,
-              decoration: const BoxDecoration(
+              decoration:  BoxDecoration(
                   image: DecorationImage(
-                      image: AssetImage('assets/doctor.jpg'),
+                      image: NetworkImage('${widget.doct['image upload']}'),
                       fit: BoxFit.cover)),
             ),
             const SizedBox(
