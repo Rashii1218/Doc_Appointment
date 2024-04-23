@@ -191,6 +191,7 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                       );
 
                       if (picked != null)
+                      {
                         setState(() {
 
                           startDate = picked;
@@ -217,7 +218,7 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                       );
 
                       if (picked != null)
-
+                      {
                         setState(() {
                           endDate = picked;
                         });
