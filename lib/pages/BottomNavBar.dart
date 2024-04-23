@@ -31,7 +31,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
           const HomePage(),
           const BookedAppointments(),
           MedicineTrackerPage(),
-          PrescriptionPage(),
           const HomePage(),
         ],
       ),
@@ -52,10 +51,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
             BottomNavigationBarItem(
               label: 'Medicine\nTracker',
               icon: Icon(Icons.calendar_month),
-            ),
-            BottomNavigationBarItem(
-              label: 'Prescription',
-              icon: Icon(Icons.receipt),
             ),
             BottomNavigationBarItem(
               label: 'My Account',

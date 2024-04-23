@@ -1,134 +1,111 @@
-import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class PrescriptionPage extends StatefulWidget {
+  Map<String, dynamic> patient;
+  String patientId;
+  PrescriptionPage({super.key, required this.patient, required this.patientId});
+
   @override
-  _PrescriptionPageState createState() => _PrescriptionPageState();
+  State<PrescriptionPage> createState() => _PrescriptionPageState();
 }
 
 class _PrescriptionPageState extends State<PrescriptionPage> {
-  final TextEditingController medicineController = TextEditingController();
-  final TextEditingController dosageController = TextEditingController();
-  final TextEditingController instructionsController = TextEditingController();
-
-  List<Map<String, dynamic>> prescriptions = [];
-
-  File? _imageFile;
-  final ImagePicker _picker = ImagePicker();
-
-  Future<void> _getImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
-    setState(() {
-      if (pickedFile != null) {
-        _imageFile = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
-  }
-
-  void addPrescription() {
-    setState(() {
-      prescriptions.add({
-        'medicine': medicineController.text,
-        'dosage': dosageController.text,
-        'instructions': instructionsController.text,
-        'image': _imageFile,
-      });
-      medicineController.clear();
-      dosageController.clear();
-      instructionsController.clear();
-      _imageFile = null;
-    });
-  }
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(widget.patientId);
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text('Prescription'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: () {
-              // Save prescription logic
-            },
-          ),
-        ],
+        title: const Text('Prescription'),
+        backgroundColor: const Color.fromARGB(255, 108, 199, 242),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Add Prescription',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _getImage,
-              child:const Text('Upload Prescription Image'),
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: medicineController,
-              decoration: const InputDecoration(
-                labelText: 'Medicine',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 10),
-            TextField(
-              controller: dosageController,
-              decoration: const InputDecoration(
-                labelText: 'Dosage',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              controller: instructionsController,
-              decoration:const InputDecoration(
-                labelText: 'Instructions',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 3,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: addPrescription,
-              child:const Text('Add'),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'Prescriptions',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: prescriptions.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: prescriptions[index]['image'] != null
-                        ? Image.file(prescriptions[index]['image'])
-                        : null,
-                    title: Text('Medicine: ${prescriptions[index]['medicine']}'),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Dosage: ${prescriptions[index]['dosage']}'),
-                        Text('Instructions: ${prescriptions[index]['instructions']}'),
-                      ],
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          child: StreamBuilder(
+            stream: firestore
+                .collection('Patient')
+                .doc(widget.patientId)
+                .collection('Prescriptions')
+                .snapshots(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.active) {
+                if (snapshot.hasData) {
+                  final prescriptionDoc = snapshot.data.docs.toList();
+                  return Container(
+                    padding: const EdgeInsets.only(left: 15,right: 15,top: 20),
+                    child: GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              mainAxisExtent: 280,
+                              mainAxisSpacing: 20,
+                              //crossAxisSpacing: 15,
+                              crossAxisCount: 1),
+                      itemCount: prescriptionDoc.length,
+                      itemBuilder: (context, index) {
+                        final prescription = prescriptionDoc[index].data();
+                        return SingleChildScrollView(
+                          child: Card(
+                            color: Colors.blue[50],
+                            child: ListTile(
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("Medicine: ${prescription['medicine']}"),
+                                Text("Dosage: ${prescription['dosage']}"),
+                                Text(
+                                    "Instructions: ${prescription['instructions']}"),
+                                if (prescription['image'] != null)
+                                  InkWell(
+                                    onTap: () => showDialog(
+                                        builder: (BuildContext context) =>
+                                            SingleChildScrollView(
+                                              child: AlertDialog(
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                insetPadding: const EdgeInsets.all(2),
+                                                title: Container(
+                                                  decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: NetworkImage(
+                                                              prescription[
+                                                                  'image']))),
+                                                  width: MediaQuery.of(context)
+                                                      .size
+                                                      .width,
+                                                   height: MediaQuery.of(context)
+                                                      .size
+                                                      .height,    
+                                                ),
+                                              ),
+                                            ),
+                                        context: context),
+                                    child: SizedBox(
+                                      height: 250,
+                                      width: 550,
+                                      child: Image.network(prescription['image'],),
+                                    ),
+                                  )
+                              ],
+                            ),
+                          )),
+                        );
+                      },
                     ),
                   );
-                },
-              ),
-            ),
-          ],
+                } else if (snapshot.hasError) {
+                  return Text('$snapshot.hasError.toString()');
+                } else {
+                  return const Text('No Data Available');
+                }
+              } else {
+                return const Center(child: CircularProgressIndicator(),);
+              }
+            },
+          ),
         ),
       ),
     );
