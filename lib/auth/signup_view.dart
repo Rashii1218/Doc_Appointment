@@ -14,6 +14,7 @@ class SignUpView extends StatefulWidget {
 
 class _SignUpViewState extends State<SignUpView> {
   String? errorMessage = '';
+  final _formKey = GlobalKey<FormState>();
 
   final TextEditingController controllerEmail = TextEditingController();
   final TextEditingController controllerPassword = TextEditingController();
@@ -55,13 +56,19 @@ class _SignUpViewState extends State<SignUpView> {
   }
 
   Widget entryField(String title, TextEditingController controller) {
-    return TextField(
+    return TextFormField(
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Please enter some value';
+        }
+        return null;
+      },
       controller: controller,
+      //obscureText: controllerPassword,
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         labelText: title,
-        labelStyle:
-            const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        labelStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -73,7 +80,12 @@ class _SignUpViewState extends State<SignUpView> {
   Widget submitButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
+        if (_formKey.currentState!.validate()) {
         createWithEmailAndPassword(context);
+      }
+    
+
+        
       },
       child: const Text(
         'Sign Up',

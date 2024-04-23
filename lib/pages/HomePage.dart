@@ -264,9 +264,9 @@ class _HomePageState extends State<HomePage> {
                               height: MediaQuery.of(context).size.height / 9,
                               child: Row(
                                 children: [
-                                  const CircleAvatar(
+                                   CircleAvatar(
                                     backgroundImage:
-                                        AssetImage('assets/doctor.jpg'),
+                                        NetworkImage('${doc['image upload']}'),
                                     backgroundColor: Colors.blue,
                                     radius: 30,
                                   ),
@@ -354,6 +354,7 @@ class SearchResults extends StatelessWidget {
           itemCount: searchResults.length,
           itemBuilder: (context, index) {
             final doctor = searchResults[index].data();
+
             return InkWell(
               splashColor: Colors.blue,
               overlayColor: const MaterialStatePropertyAll(Colors.blue),
@@ -364,13 +365,13 @@ class SearchResults extends StatelessWidget {
                       builder: (context) => DocDetails(doct: doctor),
                     ));
               },
-              child: ListTile(
-                leading: const CircleAvatar(
-                  backgroundImage: AssetImage('assets/doctor.jpg'),
-                ),
-                title: Text(doctor['name'].toString()),
-                subtitle: Text(doctor['speciality'].toString()),
-              ),
+           
+
+            return ListTile(
+              leading: Image.network('${doctor['image']}'),
+              title: Text(doctor['name'].toString()),
+              subtitle: Text(doctor['speciality'].toString()),
+
             );
           },
         ),
