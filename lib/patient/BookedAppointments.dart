@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:doc_appoint/pages/prescription.dart';
+import 'package:doc_appoint/patient/patientDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
+import "package:doc_appoint/pages/prescription.dart";
 
 class BookedAppointments extends StatefulWidget {
   const BookedAppointments({super.key});
@@ -94,6 +98,7 @@ class _BookedAppointmenState extends State<BookedAppointments> {
             if (snapshot.connectionState == ConnectionState.active) {
               if (snapshot.hasData) {
                 PatDetails = snapshot.data!.docs.toList();
+               
                 return ListView.builder(
                   itemCount: PatDetails.length,
                   itemBuilder: (context, index) {
@@ -122,25 +127,39 @@ class _BookedAppointmenState extends State<BookedAppointments> {
                           }
                         },
                         key: Key(patient.toString()),
-                        child: Card(
-                          color: Colors.blue[100],
-                          child: ListTile(
-                            title: Text(
-                              'Name: ${patient['First Name']} ${patient['Last Name']}',
+                        child: InkWell(
+                          highlightColor: Colors.blue[800],
+                          overlayColor: MaterialStatePropertyAll(
+                            Colors.blue[800],
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      PrescriptionPage(patient: patient,patientId: PatDetails[index].id,),
+                                ));
+                          },
+                          child: Card(
+                            color: Colors.blue[100],
+                            child: ListTile(
+                              title: Text(
+                                'Name: ${patient['First Name']} ${patient['Last Name']}',
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      'Date: ${DateFormat('yyyy-MM-dd').format(DateTime.parse(patient['Selected Date']))}'),
+                                  Text('Slot: ${patient['Selected Slot']}'),
+                                ],
+                              ),
+                              trailing: isAppointmentPassed
+                                  ? const Icon(Icons.check, color: Colors.green)
+                                  : null,
                             ),
-                            subtitle: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Date: ${patient['Selected Date']}'),
-                                Text('Slot: ${patient['Selected Slot']}'),
-                              ],
-                            ),
-                            trailing: isAppointmentPassed
-                                ? const Icon(Icons.check, color: Colors.green)
-                                : null,
                           ),
                         ));
-                    
                   },
                 );
               } else if (snapshot.hasError) {

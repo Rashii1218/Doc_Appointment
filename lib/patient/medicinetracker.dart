@@ -138,7 +138,7 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
         0,
         'Time to take $medicineName',
         'Remember to take your $selectedMedicineType: $medicineName',
-        tz.TZDateTime.now(tz.local).add(Duration(seconds: 5)),
+        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
         platformChannelSpecifics,
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
@@ -149,7 +149,7 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Medicine Tracker'),
+        title: const Text('Medicine Tracker'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -159,7 +159,7 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
             children: <Widget>[
               DropdownButton<String>(
                 value: selectedMedicineType,
-                hint: Text('Select Medicine Type'),
+                hint:const Text('Select Medicine Type'),
                 onChanged: (String? newValue) {
                   setState(() {
                     selectedMedicineType = newValue;
@@ -175,14 +175,14 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
               ),
               const SizedBox(height: 20),
               TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Medicine Name',
                 ),
                 onChanged: (value) {
                   medicineName = value;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -196,15 +196,18 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
                         lastDate: DateTime(2101),
                       );
                       if (picked != null && picked != startDate)
-                        setState(() {
+                      {
+                         setState(() {
                           startDate = picked;
                         });
+                      }
+                       
                     },
-                    child: Text('Select'),
+                    child: const Text('Select'),
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -218,16 +221,19 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
                         lastDate: DateTime(2101),
                       );
                       if (picked != null && picked != endDate)
+                      {
                         setState(() {
                           endDate = picked;
                         });
+                      }
+                        
                     },
-                    child: Text('Select'),
+                    child: const Text('Select'),
                   ),
                 ],
               ),
-              SizedBox(height: 20),
-              Text('Select Days:'),
+              const SizedBox(height: 20),
+              const Text('Select Days:'),
               Wrap(
                 spacing: 10,
                 children: List.generate(7, (index) {
@@ -242,7 +248,7 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
                   );
                 }),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -254,20 +260,22 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
                         initialTime: TimeOfDay.now(),
                       );
                       if (picked != null)
+                      {
                         setState(() {
                           reminderTime = picked;
                         });
+                      }                       
                     },
                     child: Text('Select'),
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   _scheduleNotification();
                 },
-                child: Text('Set Reminder'),
+                child: const Text('Set Reminder'),
               ),
             ],
           ),
