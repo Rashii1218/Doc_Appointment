@@ -264,9 +264,9 @@ class _HomePageState extends State<HomePage> {
                               height: MediaQuery.of(context).size.height / 9,
                               child: Row(
                                 children: [
-                                  const CircleAvatar(
+                                  CircleAvatar(
                                     backgroundImage:
-                                        AssetImage('assets/doctor.jpg'),
+                                      NetworkImage('${doc['image']}'),
                                     backgroundColor: Colors.blue,
                                     radius: 30,
                                   ),
@@ -365,9 +365,7 @@ class SearchResults extends StatelessWidget {
                     ));
               },
               child: ListTile(
-                leading: const CircleAvatar(
-                  backgroundImage: AssetImage('assets/doctor.jpg'),
-                ),
+                leading: Image.network('${doctor['image']}'),
                 title: Text(doctor['name'].toString()),
                 subtitle: Text(doctor['speciality'].toString()),
               ),
