@@ -153,8 +153,9 @@ class _HomePageState extends State<HomePage> {
                         _firestore
                             .collection('Doctor')
                             .where('speciality',
-                                isLessThanOrEqualTo: cards[index].speciality).where('speciality',
-                                isGreaterThanOrEqualTo: cards[index].speciality )
+                                isLessThanOrEqualTo: cards[index].speciality)
+                            .where('speciality',
+                                isGreaterThanOrEqualTo: cards[index].speciality)
                             .get()
                             .then((querysnapshot) {
                           specialityDoc = querysnapshot.docs;
@@ -251,7 +252,7 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => DocDetails(doct:doc),
+                                    builder: (context) => DocDetails(doct: doc),
                                   ));
                             },
                             child: Container(
@@ -300,7 +301,7 @@ class _HomePageState extends State<HomePage> {
                         },
                       );
                     } else if (snapshot.hasError) {
-                      return Text('${snapshot.hasError.toString()}');
+                      return Text('$snapshot.hasError.toString()');
                     } else {
                       return const Center(
                         child: Text('No data found'),
@@ -324,9 +325,10 @@ class _HomePageState extends State<HomePage> {
 
 class SearchResults extends StatelessWidget {
   final List<QueryDocumentSnapshot<Map<String, dynamic>>> searchResults;
-
-  const SearchResults({Key? key, required this.searchResults})
-      : super(key: key);
+  SearchResults({
+    Key? key,
+    required this.searchResults,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -352,10 +354,24 @@ class SearchResults extends StatelessWidget {
           itemCount: searchResults.length,
           itemBuilder: (context, index) {
             final doctor = searchResults[index].data();
+
+            return InkWell(
+              splashColor: Colors.blue,
+              overlayColor: const MaterialStatePropertyAll(Colors.blue),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DocDetails(doct: doctor),
+                    ));
+              },
+           
+
             return ListTile(
               leading: Image.network('${doctor['image']}'),
               title: Text(doctor['name'].toString()),
               subtitle: Text(doctor['speciality'].toString()),
+
             );
           },
         ),

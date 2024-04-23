@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doc_appoint/auth/login_view.dart';
+import 'package:doc_appoint/doctor/doc_patientDetails.dart';
 import 'package:doc_appoint/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,6 @@ class _AppointmentsState extends State<Appointments> {
       final timeParts = appointmentTime.split('-');
 
       if (timeParts.length != 2) {
-        // Invalid time format
         return false;
       }
 
@@ -81,7 +81,6 @@ class _AppointmentsState extends State<Appointments> {
 
       return now.isAfter(end);
     } catch (e) {
-      // Handle parsing errors
       debugPrint('Error: $e');
       return false;
     }
@@ -91,141 +90,140 @@ class _AppointmentsState extends State<Appointments> {
 
   Widget build(BuildContext context) {
     DateTime now = DateTime.now();
-    DateTime secondDay = now.add(const Duration(days: 1));
-    DateTime thirdDay = now.add(const Duration(days: 2));
 
-    String formatNow = DateFormat('EEE, MMM d').format(now);
-    String formatSec = DateFormat('EEE, MMM d').format(secondDay);
-    String formatThird = DateFormat('EEE, MMM d').format(thirdDay);
+    return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: const Text('My Appointments'),
+          backgroundColor: Colors.blue[300],
+          actions: [
+            IconButton(
+              onPressed: () {
+                auth.signOut().then((value) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginView(),
+                    ),
+                  ).onError((error, stackTrace) =>
+                      Utils().toastmessage(error.toString()));
+                });
+              },
+              icon: const Icon(Icons.logout_outlined),
+            )
+          ],
+        ),
+        body: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.only(top: 10),
+            margin: const EdgeInsetsDirectional.all(5),
+            height: MediaQuery.of(context).size.height,
+            child: StreamBuilder(
+                stream: firestore
+                    .collection('Patient')
+                    .where('Doctor UID', isEqualTo: _user?.uid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.active) {
+                    if (snapshot.hasData) {
+                      patientDetails = snapshot.data!.docs.toList();
+                      List<Widget> todayAppointments = [];
+                      List<Widget> upcomingAppointments = [];
+                      List<Widget> pastAppointments = [];
 
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false,
-            title: const Text('My Appointments'),
-            backgroundColor: Colors.blue[300],
-            actions: [
-              IconButton(
-                onPressed: () {
-                  auth.signOut().then((value) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginView(),
-                      ),
-                    ).onError((error, stackTrace) =>
-                        Utils().toastmessage(error.toString()));
-                  });
-                },
-                icon: const Icon(Icons.logout_outlined),
-              )
-            ],
-            bottom: TabBar(tabs: [
-              Tab(
-                text: formatNow,
-              ),
-              Tab(
-                text: formatSec,
-              ),
-              Tab(
-                text: formatThird,
-              ),
-            ]),
-          ),
-          body: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.only(top: 10),
-              margin: const EdgeInsetsDirectional.all(5),
-              height: MediaQuery.of(context).size.height,
-              child: StreamBuilder(
-                  stream: firestore
-                      .collection('Patient')
-                      .where('Doctor UID', isEqualTo: _user?.uid)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.active) {
-                      if (snapshot.hasData) {
-                        patientDetails = snapshot.data!.docs.toList();
-                        return ListView.builder(
-                          itemCount: patientDetails.length,
-                          itemBuilder: (context, index) {
-                            final patient = patientDetails[index].data();
-                            final isAppointmentPassed = _isAppointmentPassed(
-                                patient['Selected Date'],
-                                patient['Selected Slot']);
-                            final isAppointmentToday =
-                                _isAppointmentToday(patient['Selected Date']);
-                            if (isAppointmentToday) {
-                              return Column(
-                                children: [
-                                  Text("Today's Appointments"),
-                                  Card(
-                                    color: Colors.blue[100],
-                                    child: ListTile(
-                                      title: Text(
-                                        'Name: ${patient['First Name']} ${patient['Last Name']}',
-                                      ),
-                                      subtitle: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                              'Date: ${patient['Selected Date']}'),
-                                          Text(
-                                              'Slot: ${patient['Selected Slot']}'),
-                                        ],
-                                      ),
-                                      trailing: isAppointmentPassed
-                                          ? const Icon(Icons.check,
-                                              color: Colors.green)
-                                          : null,
-                                    ),
-                                  )
-                                ],
-                              );
-                            } else {
-                              return Column(
-                                children: [
-                                  const Text("Upcoming Appointments"),
-                                  Card(
-                                    color: Colors.blue[100],
-                                    child: ListTile(
-                                      title: Text(
-                                        'Name: ${patient['First Name']} ${patient['Last Name']}',
-                                      ),
-                                      subtitle: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                              'Date: ${patient['Selected Date']}'),
-                                          Text(
-                                              'Slot: ${patient['Selected Slot']}'),
-                                        ],
-                                      ),
-                                      trailing: isAppointmentPassed
-                                          ? const Icon(Icons.check,
-                                              color: Colors.green)
-                                          : null,
-                                    ),
-                                  )
-                                ],
-                              );
-                            }
+                      for (var patient in patientDetails) {
+                        final isAppointmentPassed = _isAppointmentPassed(
+                            patient['Selected Date'], patient['Selected Slot']);
+
+                        final isAppointmentToday =
+                            _isAppointmentToday(patient['Selected Date']);
+                        Widget appointmentCard = InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      docPatientDetails(patient: patient),
+                                ));
                           },
+                          child: Card(
+                            color: Colors.blue[100],
+                            child: ListTile(
+                              title: Text(
+                                'Name: ${patient['First Name']} ${patient['Last Name']}',
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      'Date: ${DateFormat('yyyy-MM-dd').format(DateTime.parse(patient.data()['Selected Date']))}'),
+                                  Text('Slot: ${patient['Selected Slot']}'),
+                                ],
+                              ),
+                              trailing: isAppointmentPassed
+                                  ? const Icon(Icons.check, color: Colors.green)
+                                  : null,
+                            ),
+                          ),
                         );
-                      } else if (snapshot.hasError) {
-                        return Text('$snapshot.hasError.toString()');
-                      } else {
-                        return const Text('No Appointments');
+                        if (isAppointmentToday) {
+                          todayAppointments.add(appointmentCard);
+                        } else if (isAppointmentPassed) {
+                          pastAppointments.add(appointmentCard);
+                        } else {
+                          upcomingAppointments.add(appointmentCard);
+                        }
                       }
+                      return ListView(
+                        children: [
+                          if (todayAppointments.isNotEmpty)
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                "Today's Appointments",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ...todayAppointments,
+                          if (upcomingAppointments.isNotEmpty)
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                "Upcoming Appointments",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ...upcomingAppointments,
+                          if (pastAppointments.isNotEmpty)
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                "Past Appointments",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ...pastAppointments,
+                        ],
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text('$snapshot.hasError.toString()');
                     } else {
-                      return const Center(child: CircularProgressIndicator());
+                      return const Text('No Appointments');
                     }
-                  }),
-            ),
-          )),
-    );
+                  } else {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                }),
+          ),
+        ));
   }
 }
