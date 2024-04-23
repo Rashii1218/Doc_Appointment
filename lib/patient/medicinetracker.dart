@@ -47,7 +47,6 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
       android: androidPlatformChannelSpecifics,
     );
     await flutterLocalNotificationsPlugin.zonedSchedule(
-
       medicines.indexOf(medicine),
       'Time to take ${medicine.medicineName}',
       'Remember to take your ${medicine.medicineType}: ${medicine.medicineName}',
@@ -64,17 +63,13 @@ void _saveMedicine(_Medicine medicine) {
         savedMedicines.add(medicine.medicineName);
       });
     }
-
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
-
         backgroundColor: Colors.blue[300],
         title: Text('Medicine Tracker'),
-
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -149,10 +144,8 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               DropdownButton<String>(
-
                 value: widget.medicine.medicineType,
                 hint: Text('Select Medicine Type'),
-
                 onChanged: (String? newValue) {
                   setState(() {
                     widget.medicine.medicineType = newValue;
@@ -169,14 +162,14 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
               ),
               const SizedBox(height: 20),
               TextField(
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Medicine Name',
                 ),
                 onChanged: (value) {
                   widget.medicine.medicineName = value;
                 },
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -189,21 +182,16 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                         firstDate: DateTime.now(),
                         lastDate: DateTime(2101),
                       );
-
                       if (picked != null)
-                      {
                         setState(() {
-
                           startDate = picked;
                         });
-                      }
-                       
                     },
-                    child: const Text('Select'),
+                    child: Text('Select'),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -216,21 +204,17 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                         firstDate: DateTime.now(),
                         lastDate: DateTime(2101),
                       );
-
                       if (picked != null)
-                      {
                         setState(() {
                           endDate = picked;
                         });
-                      }
-                        
                     },
-                    child: const Text('Select'),
+                    child: Text('Select'),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
-              const Text('Select Days:'),
+              SizedBox(height: 20),
+              Text('Select Days:'),
               Wrap(
                 spacing: 10,
                 children: List.generate(7, (dayIndex) {
@@ -245,7 +229,7 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                   );
                 }),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -257,23 +241,21 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                         initialTime: TimeOfDay.now(),
                       );
                       if (picked != null)
-                      {
                         setState(() {
                           reminderTime = picked;
                         });
-                      }                       
                     },
                     child: Text('Select'),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   widget.scheduleNotificationCallback(widget.medicine.medicineName);
                   Navigator.pop(context);
                 },
-                child: const Text('Set Reminder'),
+                child: Text('Set Reminder'),
               ),
             ],
           ),
