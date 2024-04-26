@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
         toolbarHeight: 90,
         backgroundColor: const Color.fromARGB(255, 108, 199, 242),
         foregroundColor: Colors.white,
-        actions: [
+         actions: [
           IconButton(
             onPressed: () {
               auth.signOut().then((value) {
@@ -48,9 +48,10 @@ class _HomePageState extends State<HomePage> {
                     Utils().toastmessage(error.toString()));
               });
             },
-            icon: const Icon(Icons.logout_outlined),
+            icon: const Icon(Icons.logout_outlined, color: Colors.black,),
           )
         ],
+       
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -266,7 +267,7 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   CircleAvatar(
                                     backgroundImage:
-                                      NetworkImage('${doc['image']}'),
+                                      NetworkImage('${doc['image upload']}'),
                                     backgroundColor: Colors.blue,
                                     radius: 30,
                                   ),
@@ -365,7 +366,7 @@ class SearchResults extends StatelessWidget {
                     ));
               },
               child: ListTile(
-                leading: Image.network('${doctor['image']}'),
+                leading: Image.network('${doctor['image upload']}'),
                 title: Text(doctor['name'].toString()),
                 subtitle: Text(doctor['speciality'].toString()),
               ),

@@ -96,22 +96,7 @@ class _AppointmentsState extends State<Appointments> {
           automaticallyImplyLeading: false,
           title: const Text('My Appointments'),
           backgroundColor: Colors.blue[300],
-          actions: [
-            IconButton(
-              onPressed: () {
-                auth.signOut().then((value) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoginView(),
-                    ),
-                  ).onError((error, stackTrace) =>
-                      Utils().toastmessage(error.toString()));
-                });
-              },
-              icon: const Icon(Icons.logout_outlined),
-            )
-          ],
+          
         ),
         body: SingleChildScrollView(
           child: Container(

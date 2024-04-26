@@ -129,7 +129,7 @@ class _DocDetailsState extends State<DocDetails> {
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
-                            book_appointment(doctorUID: widget.doct['uid']),
+                            BookAppointmentPage(doctorUID: widget.doct['uid']),
                       ));
                 },
                 child: Text('Book Appointment'),style: ButtonStyle(
