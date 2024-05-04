@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:doc_appoint/auth/login_view.dart';
 import 'package:doc_appoint/doctor/doc_patientDetails.dart';
-import 'package:doc_appoint/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -93,10 +91,15 @@ class _AppointmentsState extends State<Appointments> {
 
     return Scaffold(
         appBar: AppBar(
+          shape: ContinuousRectangleBorder( borderRadius: BorderRadius.circular(40)),
           automaticallyImplyLeading: false,
-          title: const Text('My Appointments'),
-          backgroundColor: Colors.blue[300],
-          
+          title: const Center(
+            child: Text('My Appointments',
+            style: TextStyle(color: Color.fromARGB(255, 108, 199, 242)),),
+          ),
+          //backgroundColor: Colors.blue[300],
+          //  backgroundColor: Colors.black
+          backgroundColor: const Color.fromARGB(255, 3, 41, 72),
         ),
         body: SingleChildScrollView(
           child: Container(
