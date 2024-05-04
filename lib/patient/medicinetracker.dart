@@ -1,141 +1,101 @@
+import 'package:doc_appoint/patient/medicine_homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 class MedicineTrackerPage extends StatefulWidget {
+  final Map<String, dynamic> medicineData;
+  final Function refreshMedicineList;
+
+  MedicineTrackerPage({required this.medicineData, required this.refreshMedicineList});
+
   @override
   _MedicineTrackerPageState createState() => _MedicineTrackerPageState();
 }
 
-class _Medicine {
-  String? medicineType;
+class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
+  String? selectedMedicineType;
   String medicineName = '';
   DateTime? startDate;
   DateTime? endDate;
   List<bool> selectedDays = [false, false, false, false, false, false, false];
   TimeOfDay? reminderTime;
-}
-
-class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-  List<_Medicine> medicines = [];
-  List<String> savedMedicines = [];
 
   @override
   void initState() {
     super.initState();
-    var initializationSettingsAndroid =
-        const AndroidInitializationSettings('app_icon');
-    var initializationSettings =
-        InitializationSettings(android: initializationSettingsAndroid);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+    initializeNotifications();
   }
 
-   Future<void> _scheduleNotification(String medicineName) async {
-    var medicine = medicines.firstWhere((m) => m.medicineName == medicineName);
-    var time = TimeOfDay(
-        hour: medicine.reminderTime!.hour, minute: medicine.reminderTime!.minute);
-    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
-      'medicine_notification',
-      'Medicine Reminder',
-      importance: Importance.max,
-      priority: Priority.high,
-    );
-    var platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-    );
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      medicines.indexOf(medicine),
-      'Time to take ${medicine.medicineName}',
-      'Remember to take your ${medicine.medicineType}: ${medicine.medicineName}',
-      tz.TZDateTime.now(tz.local).add(Duration(seconds: 5)),
-      platformChannelSpecifics,
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-    );
-  }
-void _saveMedicine(_Medicine medicine) {
-    if (!savedMedicines.contains(medicine.medicineName)) {
-      setState(() {
-        savedMedicines.add(medicine.medicineName);
-      });
-    }
-  }
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blue[300],
-        title: Text('Medicine Tracker'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: () async {
-                  final newMedicine = _Medicine();
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AddMedicinePage(
-                        medicine: newMedicine,
-                        scheduleNotificationCallback: _scheduleNotification,
-                      ),
-                    ),
-                  );
-                  if (newMedicine.medicineName.isNotEmpty) {
-                    setState(() {
-                      medicines.add(newMedicine);
-                      _saveMedicine(newMedicine);
-                    });
-                  }
-                },
-                child: Text('Add Medicine'),
+  Future<void> _saveMedicineData() async {
+    // Save medicine data to Firestore
 
-              ),
-              SizedBox(height: 20),
-              Text('Saved Medicines:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: savedMedicines.map((medicineName) {
-                  return Text(medicineName);
-                }).toList(),
-              ),
-            ],
-          ),
+    await FirebaseFirestore.instance.collection('medicines').add({
+      'name': medicineName,
+      'type': selectedMedicineType,
+    });
+    
+    // Navigate back to MedicineHomePage and trigger refresh
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MedicineHome(),));
+    widget.refreshMedicineList();
+  }
+
+  void initializeNotifications() async {
+    AwesomeNotifications().initialize(
+      null,
+      [
+        NotificationChannel(
+          channelKey: 'basic_channel',
+          channelName: 'Basic notifications',
+          channelDescription: 'Notification channel for basic tests',
+          defaultColor: Colors.cyanAccent,
+          ledColor: Colors.white,
         ),
+      ],
+    );
+  }
+
+  Future<void> _scheduleNotification() async {
+    debugPrint('Time');
+    if (reminderTime == null) {
+      return; // No reminder time selected, return without scheduling notification
+    }
+   
+    final DateTime now = DateTime.now();
+    final DateTime scheduledDate = DateTime(
+      now.year,
+      now.month,
+      now.day,
+      reminderTime!.hour,
+      reminderTime!.minute,
+    );
+
+    if (scheduledDate.isBefore(now)) {
+      return; // Scheduled time is in the past, return without scheduling notification
+    }
+
+    final String title = 'Time to take $medicineName';
+    final String description = 'Remember to take your $selectedMedicineType: $medicineName';
+
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 13,
+        channelKey: 'basic_channel',
+        title: title,
+        body: description,
+        notificationLayout: NotificationLayout.BigText,
       ),
     );
   }
-}
-
-class AddMedicinePage extends StatefulWidget {
-  final _Medicine medicine;
-  final Function(String) scheduleNotificationCallback;
-
-  AddMedicinePage({required this.medicine, required this.scheduleNotificationCallback});
-
-  @override
-  _AddMedicinePageState createState() => _AddMedicinePageState();
-}
-
-class _AddMedicinePageState extends State<AddMedicinePage> {
-  DateTime? startDate;
-  DateTime? endDate;
-  List<bool> selectedDays = [false, false, false, false, false, false, false];
-  TimeOfDay? reminderTime;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Medicine'),
+        title: const Text('Medicine Tracker'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -144,14 +104,13 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               DropdownButton<String>(
-                value: widget.medicine.medicineType,
-                hint: Text('Select Medicine Type'),
+                value: selectedMedicineType,
+                hint: const Text('Select Medicine Type'),
                 onChanged: (String? newValue) {
                   setState(() {
-                    widget.medicine.medicineType = newValue;
+                    selectedMedicineType = newValue;
                   });
                 },
-                
                 items: <String>['Pills', 'Syrup', 'Tablets', 'Others']
                     .map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
@@ -162,14 +121,14 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
               ),
               const SizedBox(height: 20),
               TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Medicine Name',
                 ),
                 onChanged: (value) {
-                  widget.medicine.medicineName = value;
+                  medicineName = value;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
@@ -182,7 +141,7 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                         firstDate: DateTime.now(),
                         lastDate: DateTime(2101),
                       );
-                      if (picked != null)
+                      if (picked != null && picked != startDate)
                         setState(() {
                           startDate = picked;
                         });
@@ -204,7 +163,7 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                         firstDate: DateTime.now(),
                         lastDate: DateTime(2101),
                       );
-                      if (picked != null)
+                      if (picked != null && picked != endDate)
                         setState(() {
                           endDate = picked;
                         });
@@ -217,13 +176,13 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
               Text('Select Days:'),
               Wrap(
                 spacing: 10,
-                children: List.generate(7, (dayIndex) {
+                children: List.generate(7, (index) {
                   return FilterChip(
-                    label: Text(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][dayIndex]),
-                    selected: selectedDays[dayIndex],
+                    label: Text(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index]),
+                    selected: selectedDays[index],
                     onSelected: (bool selected) {
                       setState(() {
-                        selectedDays[dayIndex] = selected;
+                        selectedDays[index] = selected;
                       });
                     },
                   );
@@ -235,7 +194,7 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
                 children: <Widget>[
                   Text('Reminder Time: ${reminderTime?.format(context) ?? 'Not set'}'),
                   ElevatedButton(
-                    onPressed: () async {
+                    onPressed:() async {
                       final TimeOfDay? picked = await showTimePicker(
                         context: context,
                         initialTime: TimeOfDay.now(),
@@ -251,11 +210,13 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: () {
-                  widget.scheduleNotificationCallback(widget.medicine.medicineName);
-                  Navigator.pop(context);
+                onPressed: () async{
+                  //triggerNotification();
+                  await _saveMedicineData();
+                  debugPrint('after func');
+                   await _scheduleNotification();
                 },
-                child: Text('Set Reminder'),
+                child: Text('Save Medicine'),
               ),
             ],
           ),
@@ -263,7 +224,6 @@ class _AddMedicinePageState extends State<AddMedicinePage> {
       ),
     );
   }
+  
 }
 
-              
-              

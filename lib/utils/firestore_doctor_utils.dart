@@ -1,40 +1,15 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-
-// Future<void> setupDoctorAvailability(String doctorUID) async {
-//   final weekdays = [
-//     'Monday',
-//     'Tuesday',
-//     'Wednesday',
-//     'Thursday',
-//     'Friday',
-//     'Saturday',
-//     'Sunday',
-//   ];
-
-//   for (final weekday in weekdays) {
-//     final availabilityRef = FirebaseFirestore.instance
-//         .collection('doctorAvailability')
-//         .doc('$doctorUID\_$weekday');
-
-//     await availabilityRef.set({
-//       'doctorUID': doctorUID,
-//       'weekday': weekday.toLowerCase(),
-//       'morning': false,
-//       'afternoon': false,
-//       'evening': false,
-//     });
-//   }
-// }
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<void> setupDoctorAvailability(String doctorUID) async {
+  bool ? var1;
+  bool ? var2;
+  bool ? var3;
   final weekdays = [
     {
       'name': 'Monday',
-      'morning': false,
-      'afternoon': false,
-      'evening': false,
+      'morning': var1,
+      'afternoon': var2,
+      'evening': var3,
     },
     {
       'name': 'Tuesday',

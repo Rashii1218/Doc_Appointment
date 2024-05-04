@@ -87,6 +87,7 @@ class _docPatientDetailsState extends State<docPatientDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blue[50],
       appBar: AppBar(
         title: const Text(''),
       ),
@@ -97,25 +98,29 @@ class _docPatientDetailsState extends State<docPatientDetails> {
               padding: const EdgeInsets.all(10.0),
               child: Card(
                   elevation: Material.defaultSplashRadius,
-                  color: change ? Colors.pink[100] : Colors.blue[100],
+                  // color: const Color.fromARGB(255, 108, 199, 242),
+                  color: const Color.fromARGB(255, 3, 41, 72),
                   child: Container(
                     width: MediaQuery.of(context).size.width,
                     padding: const EdgeInsets.all(8.0),
-                    margin: EdgeInsets.all(5),
+                    margin: const EdgeInsets.all(5),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Name:  ${widget.patient['First Name']} ${widget.patient['Last Name']}',
-                            style: const TextStyle(fontSize: 20),
+                            style: const TextStyle(
+                                fontSize: 20, color: Colors.white),
                           ),
                           Text(
                             'Age:  ${widget.patient['Age']}',
-                            style: const TextStyle(fontSize: 20),
+                            style: const TextStyle(
+                                fontSize: 20, color: Colors.white),
                           ),
                           Text(
                             'Mobile Number:  ${widget.patient['Mobile']}',
-                            style: const TextStyle(fontSize: 20),
+                            style: const TextStyle(
+                                fontSize: 20, color: Colors.white),
                           ),
                         ]),
                   )),
@@ -124,6 +129,14 @@ class _docPatientDetailsState extends State<docPatientDetails> {
               height: 20,
             ),
             Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                  Color.fromARGB(255, 226, 241, 251),
+                  Color.fromARGB(255, 179, 218, 244),
+                  Color.fromARGB(255, 48, 118, 175)
+                ]),
+              ),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -136,8 +149,15 @@ class _docPatientDetailsState extends State<docPatientDetails> {
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
+                      style: const ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll(
+                        Color.fromARGB(255, 3, 41, 72),
+                      )),
                       onPressed: _getImage,
-                      child: const Text('Upload Prescription Image'),
+                      child: const Text(
+                        'Upload Prescription Image',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                     const SizedBox(height: 20),
                     TextField(
@@ -166,10 +186,16 @@ class _docPatientDetailsState extends State<docPatientDetails> {
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
+                      style: const ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll(
+                              Color.fromARGB(255, 3, 41, 72))),
                       onPressed: () {
                         storeDetails();
                       },
-                      child: const Text('Add'),
+                      child: const Text(
+                        'Add',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                     const SizedBox(height: 20),
                     const Text(
@@ -220,7 +246,8 @@ class _docPatientDetailsState extends State<docPatientDetails> {
                                               child: AlertDialog(
                                                 backgroundColor:
                                                     Colors.transparent,
-                                                insetPadding: const EdgeInsets.all(2),
+                                                insetPadding:
+                                                    const EdgeInsets.all(2),
                                                 title: Container(
                                                   decoration: BoxDecoration(
                                                       image: DecorationImage(
@@ -230,9 +257,9 @@ class _docPatientDetailsState extends State<docPatientDetails> {
                                                   width: MediaQuery.of(context)
                                                       .size
                                                       .width,
-                                                   height: MediaQuery.of(context)
+                                                  height: MediaQuery.of(context)
                                                       .size
-                                                      .height,    
+                                                      .height,
                                                 ),
                                               ),
                                             ),

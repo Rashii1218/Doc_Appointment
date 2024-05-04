@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doc_appoint/pages/prescription.dart';
-import 'package:doc_appoint/patient/patientDetails.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-import "package:doc_appoint/pages/prescription.dart";
 
 class BookedAppointments extends StatefulWidget {
   const BookedAppointments({super.key});

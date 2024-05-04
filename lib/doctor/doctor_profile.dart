@@ -184,12 +184,15 @@ class _DoctorProfileState extends State<DoctorProfile> {
         automaticallyImplyLeading: false,
         title: Text(
           "Your Profile",
-          style: GoogleFonts.lora(color: Colors.white, fontSize: 24),
+          style: GoogleFonts.lora(color: const Color.fromARGB(255, 108, 199, 242), fontSize: 24),
         ),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 108, 199, 242),
+        // backgroundColor: const Color.fromARGB(255, 108, 199, 242),
+        // backgroundColor: Colors.black,
+        backgroundColor: const Color.fromARGB(255, 3, 41, 72),
         actions: [
           IconButton(
+            color: const Color.fromARGB(255, 108, 199, 242),
             onPressed: () {
               auth.signOut().then((value) {
                 Navigator.push(
@@ -220,7 +223,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Color.fromARGB(255, 226, 241, 251),
+                      Color.fromARGB(255, 226, 241, 251), 
                       Color.fromARGB(255, 179, 218, 244),
                     ],
                     begin: Alignment.topCenter,

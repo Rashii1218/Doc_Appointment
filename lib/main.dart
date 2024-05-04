@@ -17,7 +17,7 @@ void main() async {
   runApp( 
     GetMaterialApp(
      debugShowCheckedModeBanner: false,
-      home: user != null ? BottomNavBar() : const LoginView(),
+      home: user != null ? const BottomNavBar() : const LoginView(),
   ));
 }
 

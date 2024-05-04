@@ -38,7 +38,7 @@
 //           );
 //         });
 //       } else {
-        
+
 //       }
 //     });
 //   }
@@ -72,7 +72,7 @@
 //           unselectedItemColor: Colors.black,
 //           type: BottomNavigationBarType.shifting,
 //           showUnselectedLabels: true,
-          
+
 //           items: const [
 //             BottomNavigationBarItem(
 //               label: 'Home',
@@ -106,7 +106,7 @@
 import "package:doc_appoint/pages/HomePage.dart";
 import "package:doc_appoint/patient/BookedAppointments.dart";
 import "package:doc_appoint/patient/User_profile.dart";
-import "package:doc_appoint/patient/medicinetracker.dart";
+import "package:doc_appoint/patient/medicine_homepage.dart";
 import "package:flutter/material.dart";
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -157,13 +157,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
     setState(() {
       currIndex = index;
     });
-    
-      pageController.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeOut,
-      );
-    
+
+    pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeOut,
+    );
   }
 
   @override
@@ -176,12 +175,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
           children: [
             const HomePage(),
             const BookedAppointments(),
-            MedicineTrackerPage(),
-            userProfile != null ? userProfile! : const Center(child: CircularProgressIndicator()),
+            MedicineHome(),
+            userProfile != null
+                ? userProfile!
+                : const Center(child: CircularProgressIndicator()),
           ],
         ),
       ),
-      
+
       bottomNavigationBar: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Container(
@@ -202,11 +203,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 Icons.list,
               ),
               RollingBottomBarItem(
-               // label: 'Medicine\nTracker',
+                // label: 'Medicine\nTracker',
                 Icons.calendar_month,
               ),
               RollingBottomBarItem(
-               //label: 'My Account',
+                //label: 'My Account',
                 Icons.account_circle,
               ),
             ],
@@ -218,4 +219,3 @@ class _BottomNavBarState extends State<BottomNavBar> {
     );
   }
 }
-

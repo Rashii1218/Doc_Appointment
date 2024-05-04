@@ -50,7 +50,6 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
- 
   Widget entryField(String title, TextEditingController controller) {
     return TextField(
       controller: controller,
@@ -63,11 +62,14 @@ class _LoginViewState extends State<LoginView> {
   Widget _errorMessage() {
     return Text(errorMessage == '' ? '' : '$errorMessage');
   }
+  
+   DocHomePage docProfile = const DocHomePage();
 
   Widget submitButton(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
         signInWithEmailAndPassword(context);
+        
       },
       child: Text('Login'),
     );
@@ -84,6 +86,8 @@ class _LoginViewState extends State<LoginView> {
       child: Text('Don\'t have an account? Sign Up instead'),
     );
   }
+
+ 
 
   @override
   Widget build(BuildContext context) {
