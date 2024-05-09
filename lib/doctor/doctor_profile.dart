@@ -184,7 +184,8 @@ class _DoctorProfileState extends State<DoctorProfile> {
         automaticallyImplyLeading: false,
         title: Text(
           "Your Profile",
-          style: GoogleFonts.lora(color: const Color.fromARGB(255, 108, 199, 242), fontSize: 24),
+          style: GoogleFonts.lora(
+              color: const Color.fromARGB(255, 108, 199, 242), fontSize: 24),
         ),
         centerTitle: true,
         // backgroundColor: const Color.fromARGB(255, 108, 199, 242),
@@ -223,8 +224,10 @@ class _DoctorProfileState extends State<DoctorProfile> {
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      Color.fromARGB(255, 226, 241, 251), 
+                      Color.fromARGB(255, 17, 96, 132),
+                      Color.fromARGB(255, 71, 181, 233),
                       Color.fromARGB(255, 179, 218, 244),
+                      Color.fromARGB(255, 226, 241, 251),
                     ],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,

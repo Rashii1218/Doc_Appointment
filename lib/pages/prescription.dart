@@ -18,8 +18,9 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
     debugPrint(widget.patientId);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Prescription'),
-        backgroundColor: const Color.fromARGB(255, 108, 199, 242),
+        leading: const BackButton(color: Colors.white,),
+        title: const Text('Prescription',style: TextStyle(color: Colors.white),),
+        backgroundColor:  const Color.fromARGB(255, 17, 96, 132),
       ),
       body: SingleChildScrollView(
         child: Container(
