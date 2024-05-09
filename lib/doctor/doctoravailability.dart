@@ -159,6 +159,7 @@ class _DoctorAvailabilityPageState extends State<DoctorAvailabilityPage> {
   @override
   void initState() {
     super.initState();
+    //setupDoctorAvailability(widget.doctorUID);
     fetchDoctorAvailability();
   }
 
@@ -232,39 +233,43 @@ class _DoctorAvailabilityPageState extends State<DoctorAvailabilityPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: const Center(
-          child: Text('Your Availability',
-          style: TextStyle(color: Colors.white),),
-        ),
-        // backgroundColor: Colors.blue[300],
-        backgroundColor: const Color.fromARGB(255, 108, 199, 242)
-        
-      ),
+          automaticallyImplyLeading: false,
+          title: const Center(
+            child: Text(
+              'Your Availability',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          // backgroundColor: Colors.blue[300],
+          backgroundColor: const Color.fromARGB(255, 108, 199, 242)),
       body: Container(
         decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  transform: GradientRotation(400),
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                  Color.fromARGB(255, 226, 241, 251),
-                  Color.fromARGB(255, 179, 218, 244),
-                  Color.fromARGB(255, 52, 148, 227),
-                ]),
-              ),
+          gradient: LinearGradient(
+              transform: GradientRotation(400),
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.fromARGB(255, 226, 241, 251),
+                Color.fromARGB(255, 179, 218, 244),
+                Color.fromARGB(255, 52, 148, 227),
+              ]),
+        ),
         child: ListView.builder(
           itemCount: availability.length,
           itemBuilder: (context, index) {
             final weekday = availability.keys.elementAt(index);
             final timeSlotData = availability[weekday]!;
-        
+
             return Card(
               margin: const EdgeInsets.all(10),
               // color: Colors.black,
               color: const Color.fromARGB(255, 3, 41, 72),
               child: ExpansionTile(
-              title: Text(weekday,style: const TextStyle(color: Color.fromARGB(255, 108, 199, 242)),),
+                title: Text(
+                  weekday,
+                  style: const TextStyle(
+                      color: Color.fromARGB(255, 108, 199, 242)),
+                ),
                 children: [
                   Card(
                     color: Colors.blue[100],

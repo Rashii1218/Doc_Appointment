@@ -18,9 +18,14 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
     debugPrint(widget.patientId);
     return Scaffold(
       appBar: AppBar(
-        leading: const BackButton(color: Colors.white,),
-        title: const Text('Prescription',style: TextStyle(color: Colors.white),),
-        backgroundColor:  const Color.fromARGB(255, 17, 96, 132),
+        leading: const BackButton(
+          color: Colors.white,
+        ),
+        title: const Text(
+          'Prescription',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color.fromARGB(255, 17, 96, 132),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -37,7 +42,8 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
                 if (snapshot.hasData) {
                   final prescriptionDoc = snapshot.data.docs.toList();
                   return Container(
-                    padding: const EdgeInsets.only(left: 15,right: 15,top: 20),
+                    padding:
+                        const EdgeInsets.only(left: 15, right: 15, top: 20),
                     child: GridView.builder(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
@@ -50,49 +56,55 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
                         final prescription = prescriptionDoc[index].data();
                         return SingleChildScrollView(
                           child: Card(
-                            color: Colors.blue[50],
-                            child: ListTile(
-                            title: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("Medicine: ${prescription['medicine']}"),
-                                Text("Dosage: ${prescription['dosage']}"),
-                                Text(
-                                    "Instructions: ${prescription['instructions']}"),
-                                if (prescription['image'] != null)
-                                  InkWell(
-                                    onTap: () => showDialog(
-                                        builder: (BuildContext context) =>
-                                            SingleChildScrollView(
-                                              child: AlertDialog(
-                                                backgroundColor:
-                                                    Colors.transparent,
-                                                insetPadding: const EdgeInsets.all(2),
-                                                title: Container(
-                                                  decoration: BoxDecoration(
-                                                      image: DecorationImage(
-                                                          image: NetworkImage(
-                                                              prescription[
-                                                                  'image']))),
-                                                  width: MediaQuery.of(context)
-                                                      .size
-                                                      .width,
-                                                   height: MediaQuery.of(context)
-                                                      .size
-                                                      .height,    
+                              color: Colors.blue[50],
+                              child: ListTile(
+                                title: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        "Medicine: ${prescription['medicine']}"),
+                                    Text("Dosage: ${prescription['dosage']}"),
+                                    Text(
+                                        "Instructions: ${prescription['instructions']}"),
+                                    if (prescription['image'] != null)
+                                      InkWell(
+                                        onTap: () => showDialog(
+                                            builder: (BuildContext context) =>
+                                                SingleChildScrollView(
+                                                  child: AlertDialog(
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    insetPadding:
+                                                        const EdgeInsets.all(2),
+                                                    title: Container(
+                                                      decoration: BoxDecoration(
+                                                          image: DecorationImage(
+                                                              image: NetworkImage(
+                                                                  prescription[
+                                                                      'image']))),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      height:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .height,
+                                                    ),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                        context: context),
-                                    child: SizedBox(
-                                      height: 250,
-                                      width: 550,
-                                      child: Image.network(prescription['image'],),
-                                    ),
-                                  )
-                              ],
-                            ),
-                          )),
+                                            context: context),
+                                        child: SizedBox(
+                                          height: 250,
+                                          width: 550,
+                                          child: Image.network(
+                                            prescription['image'],
+                                          ),
+                                        ),
+                                      )
+                                  ],
+                                ),
+                              )),
                         );
                       },
                     ),
@@ -100,10 +112,14 @@ class _PrescriptionPageState extends State<PrescriptionPage> {
                 } else if (snapshot.hasError) {
                   return Text('$snapshot.hasError.toString()');
                 } else {
-                  return const Text('No Data Available');
+                  return const Center(
+                    child: Text('No Data Available'),
+                  );
                 }
               } else {
-                return const Center(child: CircularProgressIndicator(),);
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
               }
             },
           ),

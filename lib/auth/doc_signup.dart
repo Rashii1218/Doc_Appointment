@@ -61,6 +61,50 @@ class _DocSignUpState extends State<DocSignUp> {
       });
     });
   }
+    final weekdays = [
+    {
+      'name': 'Monday',
+      'morning': false,
+      'afternoon': false,
+      'evening': false,
+    },
+    {
+      'name': 'Tuesday',
+      'morning': false,
+      'afternoon': false,
+      'evening': false,
+    },
+    {
+      'name': 'Wednesday',
+      'morning': false,
+      'afternoon': false,
+      'evening': false,
+    },
+    {
+      'name': 'Thursday',
+      'morning': false,
+      'afternoon': false,
+      'evening': false,
+    },
+    {
+      'name': 'Friday',
+      'morning': false,
+      'afternoon': false,
+      'evening': false,
+    },
+    {
+      'name': 'Saturday',
+      'morning': false,
+      'afternoon': false,
+      'evening': false,
+    },
+    {
+      'name': 'Sunday',
+      'morning': false,
+      'afternoon': false,
+      'evening': false,
+    },
+  ];
 
   Future<void> createDoctorAccount(BuildContext context) async {
     try {
@@ -72,6 +116,7 @@ class _DocSignUpState extends State<DocSignUp> {
         email: emailController.text,
         password: passwordController.text,
       );
+       String doctorUID = userCredential.user!.uid;
 
       await _firestore.collection('Doctor').doc(emailController.text).set({
         'Regno': RegnoController.text,
@@ -86,8 +131,14 @@ class _DocSignUpState extends State<DocSignUp> {
         'fees': feesController.text,
         'image upload': _uploadedFileURL,
       });
+       final availabilityRef = FirebaseFirestore.instance
+      .collection('doctorAvailability')
+      .doc(doctorUID);
 
-      
+  await availabilityRef.set({
+    'doctorUID': doctorUID,
+    'weekdays': weekdays,
+  }); 
 
       Navigator.push(
         context,
