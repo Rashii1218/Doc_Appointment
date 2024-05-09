@@ -11,7 +11,7 @@ class CardModel {
 }
 
 List<CardModel> cards = [
-  CardModel("cardio", 0xFFec407a, Icons.heart_broken),
+  CardModel("Cardiologist", 0xFFec407a, Icons.heart_broken),
   CardModel("Dentist", 0xFF5c6bc0, const IconData(0x1F9B7)),
   CardModel("Eye Special", 0xFFfbc02d, TablerIcons.eye),
   CardModel("Orthopaedic", 0xFF1565C0, Icons.wheelchair_pickup_sharp),
