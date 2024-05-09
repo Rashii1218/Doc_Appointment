@@ -50,11 +50,17 @@ class _LoginViewState extends State<LoginView> {
     }
   }
 
-  Widget entryField(String title, TextEditingController controller) {
+  Widget entryField(String title, TextEditingController controller, {bool obscureText = false}) {
     return TextField(
       controller: controller,
+      obscureText: obscureText,
+      style: TextStyle(color: Colors.white),
+      cursorColor: Colors.white, 
       decoration: InputDecoration(
         labelText: title,
+        labelStyle: TextStyle(color: Colors.white),
+        hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)), 
+      enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.white)),
       ),
     );
   }
@@ -83,7 +89,8 @@ class _LoginViewState extends State<LoginView> {
           MaterialPageRoute(builder: (context) => const SignUpView()),
         );
       },
-      child: Text('Don\'t have an account? Sign Up instead'),
+      child: Text('Don\'t have an account? Sign Up instead',
+      style: TextStyle(color: Colors.white),),
     );
   }
 
@@ -107,12 +114,12 @@ class _LoginViewState extends State<LoginView> {
             Expanded(
               child: Container(
                 padding: const EdgeInsets.all(10),
-                color: const Color.fromARGB(255, 108, 199, 242),
+                color: const Color.fromARGB(255, 3, 41, 72),
                 child: Form(
                   child: Column(
                     children: <Widget>[
-                      entryField('email', controllerEmail),
-                      entryField('password', controllerPassword),
+                      entryField('email', controllerEmail,),
+                      entryField('password', controllerPassword,obscureText: true),
                       _errorMessage(),
                       submitButton(context),
                       loginOrRegisterButton(),

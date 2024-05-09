@@ -17,6 +17,7 @@ class _DocSignUpState extends State<DocSignUp> {
   String? errorMessage = '';
   final _formKey = GlobalKey<FormState>();
 
+  final TextEditingController RegnoController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController mobileController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
@@ -73,6 +74,7 @@ class _DocSignUpState extends State<DocSignUp> {
       );
 
       await _firestore.collection('Doctor').doc(emailController.text).set({
+        'Regno': RegnoController.text,
         'name': nameController.text,
         'mobileNumber': mobileController.text,
         'age': ageController.text,
@@ -183,6 +185,7 @@ class _DocSignUpState extends State<DocSignUp> {
                                 : null,
                           ),
                         ),
+                        
                         const SizedBox(height: 10),
                         entryField('Name', nameController),
                         const SizedBox(height: 10),
@@ -191,6 +194,8 @@ class _DocSignUpState extends State<DocSignUp> {
                         entryField('Age', ageController),
                         const SizedBox(height: 10),
                         entryField('Speciality', specialityController),
+                        const SizedBox(height: 10),
+                        entryField('Registration Number', RegnoController),
                         const SizedBox(height: 10),
                         entryField('Email', emailController),
                         const SizedBox(height: 10),
