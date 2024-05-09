@@ -103,6 +103,17 @@ class _AppointmentsState extends State<Appointments> {
         ),
         body: SingleChildScrollView(
           child: Container(
+            decoration: const BoxDecoration(
+            gradient: LinearGradient(
+                    colors: [
+                       Color.fromARGB(255, 226, 241, 251),
+                       Color.fromARGB(255, 179, 218, 244),
+                       Color.fromARGB(255, 52, 148, 227)
+                    ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                  ),
+            ),
             padding: const EdgeInsets.only(top: 10),
             margin: const EdgeInsetsDirectional.all(5),
             height: MediaQuery.of(context).size.height,

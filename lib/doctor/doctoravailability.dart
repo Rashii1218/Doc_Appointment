@@ -241,63 +241,75 @@ class _DoctorAvailabilityPageState extends State<DoctorAvailabilityPage> {
         backgroundColor: const Color.fromARGB(255, 108, 199, 242)
         
       ),
-      body: ListView.builder(
-        itemCount: availability.length,
-        itemBuilder: (context, index) {
-          final weekday = availability.keys.elementAt(index);
-          final timeSlotData = availability[weekday]!;
-
-          return Card(
-            margin: const EdgeInsets.all(10),
-            // color: Colors.black,
-            color: const Color.fromARGB(255, 3, 41, 72),
-            child: ExpansionTile(
-
+      body: Container(
+        decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  transform: GradientRotation(400),
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                  Color.fromARGB(255, 226, 241, 251),
+                  Color.fromARGB(255, 179, 218, 244),
+                  Color.fromARGB(255, 52, 148, 227),
+                ]),
+              ),
+        child: ListView.builder(
+          itemCount: availability.length,
+          itemBuilder: (context, index) {
+            final weekday = availability.keys.elementAt(index);
+            final timeSlotData = availability[weekday]!;
+        
+            return Card(
+              margin: const EdgeInsets.all(10),
+              // color: Colors.black,
+              color: const Color.fromARGB(255, 3, 41, 72),
+              child: ExpansionTile(
               title: Text(weekday,style: const TextStyle(color: Color.fromARGB(255, 108, 199, 242)),),
-              children: [
-                Card(
-                  color: Colors.blue[100],
-                  margin: const EdgeInsets.all(10),
-                  child: ListTile(
-                    title: const Text('Morning'),
-                    trailing: Switch(
-                      value: timeSlotData['morning']!,
-                      onChanged: (value) {
-                        updateDoctorAvailability(weekday, 'morning', value);
-                      },
+                children: [
+                  Card(
+                    color: Colors.blue[100],
+                    margin: const EdgeInsets.all(10),
+                    child: ListTile(
+                      title: const Text('Morning'),
+                      trailing: Switch(
+                        value: timeSlotData['morning']!,
+                        onChanged: (value) {
+                          updateDoctorAvailability(weekday, 'morning', value);
+                        },
+                      ),
                     ),
                   ),
-                ),
-                Card(
-                  color: Colors.blue[100],
-                  margin: const EdgeInsets.all(10),
-                  child: ListTile(
-                    title: const Text('Afternoon'),
-                    trailing: Switch(
-                      value: timeSlotData['afternoon']!,
-                      onChanged: (value) {
-                        updateDoctorAvailability(weekday, 'afternoon', value);
-                      },
+                  Card(
+                    color: Colors.blue[100],
+                    margin: const EdgeInsets.all(10),
+                    child: ListTile(
+                      title: const Text('Afternoon'),
+                      trailing: Switch(
+                        value: timeSlotData['afternoon']!,
+                        onChanged: (value) {
+                          updateDoctorAvailability(weekday, 'afternoon', value);
+                        },
+                      ),
                     ),
                   ),
-                ),
-                Card(
-                  color: Colors.blue[100],
-                  margin: EdgeInsets.all(10),
-                  child: ListTile(
-                    title: const Text('Evening'),
-                    trailing: Switch(
-                      value: timeSlotData['evening']!,
-                      onChanged: (value) {
-                        updateDoctorAvailability(weekday, 'evening', value);
-                      },
+                  Card(
+                    color: Colors.blue[100],
+                    margin: EdgeInsets.all(10),
+                    child: ListTile(
+                      title: const Text('Evening'),
+                      trailing: Switch(
+                        value: timeSlotData['evening']!,
+                        onChanged: (value) {
+                          updateDoctorAvailability(weekday, 'evening', value);
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          );
-        },
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

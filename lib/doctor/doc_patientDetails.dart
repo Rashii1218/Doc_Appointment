@@ -131,10 +131,13 @@ class _docPatientDetailsState extends State<docPatientDetails> {
             Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
+                  transform: GradientRotation(400),
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                   colors: [
                   Color.fromARGB(255, 226, 241, 251),
                   Color.fromARGB(255, 179, 218, 244),
-                  Color.fromARGB(255, 48, 118, 175)
+                  Color.fromARGB(255, 52, 148, 227)
                 ]),
               ),
               child: Padding(

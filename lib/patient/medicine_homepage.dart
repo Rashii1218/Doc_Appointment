@@ -14,7 +14,17 @@ class _MedicineHomeState extends State<MedicineHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Medicine Tracker'),
+        leading: const BackButton(
+     color: Colors.white),
+        title:const Text(
+          'MediTracker',
+          style: TextStyle(
+            fontWeight: FontWeight.w300,
+            color: Colors.white,
+            
+          ),
+          ),
+        backgroundColor:const Color.fromARGB(255, 3, 41, 72),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestore.collection('medicines').snapshots(),
@@ -55,6 +65,8 @@ class _MedicineHomeState extends State<MedicineHome> {
         },
       ),
       floatingActionButton: FloatingActionButton(
+         backgroundColor:Color.fromARGB(255, 183, 237, 252) ,
+        shape:CircleBorder(),
         onPressed: () {
           // Navigate to the MedicineTrackerPage for adding a new medicine
           Navigator.push(

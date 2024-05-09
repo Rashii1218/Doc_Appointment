@@ -188,7 +188,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         child: Container(
           height: 80,
           child: RollingBottomBar(
-            color: Colors.black,
+            color: const Color.fromARGB(255, 3, 41, 72),
             controller: pageController,
             flat: true,
             //useActiveColorByDefault: false,

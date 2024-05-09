@@ -82,8 +82,10 @@ class _BookedAppointmenState extends State<BookedAppointments> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your Appointments'),
-        backgroundColor: const Color.fromARGB(255, 108, 199, 242),
+        leading: const BackButton(color: Colors.white,),
+        title: const Text('Your Appointments', style: TextStyle(color: Colors.white),),
+        //backgroundColor: const Color.fromARGB(255, 108, 199, 242),
+        backgroundColor: const Color.fromARGB(255, 3, 41, 72),
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
@@ -96,7 +98,7 @@ class _BookedAppointmenState extends State<BookedAppointments> {
             if (snapshot.connectionState == ConnectionState.active) {
               if (snapshot.hasData) {
                 PatDetails = snapshot.data!.docs.toList();
-               
+
                 return ListView.builder(
                   itemCount: PatDetails.length,
                   itemBuilder: (context, index) {
@@ -134,8 +136,10 @@ class _BookedAppointmenState extends State<BookedAppointments> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) =>
-                                      PrescriptionPage(patient: patient,patientId: PatDetails[index].id,),
+                                  builder: (context) => PrescriptionPage(
+                                    patient: patient,
+                                    patientId: PatDetails[index].id,
+                                  ),
                                 ));
                           },
                           child: Card(
