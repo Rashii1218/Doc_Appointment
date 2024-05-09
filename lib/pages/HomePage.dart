@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
             },
             icon: const Icon(
               Icons.logout_outlined,
-              color: Colors.black,
+              color: Color.fromARGB(255, 108, 199, 242),
             ),
           )
         ],
