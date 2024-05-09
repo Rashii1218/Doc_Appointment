@@ -144,6 +144,7 @@ class DoctorProfile extends StatefulWidget {
   final String description;
   final String email;
   final String exp;
+  final String? Regno;
   final String fees;
   final String mobileNumber;
   final String age;
@@ -157,6 +158,7 @@ class DoctorProfile extends StatefulWidget {
     required this.description,
     required this.email,
     required this.exp,
+    required this.Regno,
     required this.fees,
     required this.mobileNumber,
     required this.age,
@@ -308,6 +310,8 @@ class _DoctorProfileState extends State<DoctorProfile> {
                         ],
                       ),
                       const SizedBox(height: 10),
+                      
+                      const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -354,6 +358,15 @@ class _DoctorProfileState extends State<DoctorProfile> {
                         ],
                       ),
                       const SizedBox(height: 20),
+                      Text(
+                            'Registration Number: ${widget.Regno}',
+                            style: GoogleFonts.lora(
+                              fontSize: 18,
+                              color: Colors.black,
+                            ),
+                          ),
+
+                  
                     ],
                   ),
                 ),

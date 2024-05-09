@@ -16,6 +16,7 @@ class _SignUpViewState extends State<SignUpView> {
   String? errorMessage = '';
   final _formKey = GlobalKey<FormState>();
 
+  final TextEditingController RegnoController = TextEditingController();
   final TextEditingController controllerEmail = TextEditingController();
   final TextEditingController controllerPassword = TextEditingController();
   final TextEditingController controllerName = TextEditingController();
@@ -35,6 +36,7 @@ class _SignUpViewState extends State<SignUpView> {
       );
 
       await _firestore.collection('User').doc(controllerEmail.text).set({
+        'Regno': RegnoController.text,
         'Name': controllerName.text,
         'Mobile': controllerMobile.text,
         'Age': controllerAge.text,
@@ -128,6 +130,9 @@ class _SignUpViewState extends State<SignUpView> {
                         entryField('Mobile Number', controllerMobile),
                         const SizedBox(height: 10),
                         entryField('Age', controllerAge),
+                        const SizedBox(height: 10),
+                        entryField('Registration Number',RegnoController ),
+                        
                         const SizedBox(height: 10),
                         entryField('Address', controllerAddress),
                         const SizedBox(height: 10),
