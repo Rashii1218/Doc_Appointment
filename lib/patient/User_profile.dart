@@ -374,7 +374,8 @@ class _UserProfileState extends State<UserProfile> {
           style: GoogleFonts.lora(color: Colors.white),
         ),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB(255, 108, 199, 242),
+        //backgroundColor: const Color.fromARGB(255, 108, 199, 242),
+        backgroundColor: const Color.fromARGB(255, 3, 41, 72),
         actions: [
           IconButton(
             onPressed: () {
@@ -388,7 +389,7 @@ class _UserProfileState extends State<UserProfile> {
                     Utils().toastmessage(error.toString()));
               });
             },
-            icon: const Icon(Icons.logout_outlined, color: Colors.black,),
+            icon: const Icon(Icons.logout_outlined, color: Colors.white,),
           )
         ],
       ),

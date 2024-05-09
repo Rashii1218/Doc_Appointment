@@ -33,9 +33,10 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(fontSize: 40, fontStyle: FontStyle.italic),
         ),
         toolbarHeight: 90,
-        backgroundColor: const Color.fromARGB(255, 108, 199, 242),
+        //backgroundColor: const Color.fromARGB(255, 108, 199, 242),
+        backgroundColor: const Color.fromARGB(255, 3, 41, 72),
         foregroundColor: Colors.white,
-         actions: [
+        actions: [
           IconButton(
             onPressed: () {
               auth.signOut().then((value) {
@@ -48,10 +49,12 @@ class _HomePageState extends State<HomePage> {
                     Utils().toastmessage(error.toString()));
               });
             },
-            icon: const Icon(Icons.logout_outlined, color: Colors.black,),
+            icon: const Icon(
+              Icons.logout_outlined,
+              color: Colors.black,
+            ),
           )
         ],
-       
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -60,7 +63,7 @@ class _HomePageState extends State<HomePage> {
               padding: const EdgeInsets.only(
                   top: 40, left: 10, right: 10, bottom: 5),
               height: 120,
-              color: const Color.fromARGB(255, 108, 199, 242),
+              color:const Color.fromARGB(255, 3, 41, 72),
               child: Row(
                 children: [
                   Expanded(
@@ -258,18 +261,19 @@ class _HomePageState extends State<HomePage> {
                             },
                             child: Container(
                               margin: const EdgeInsets.only(top: 8),
-                              color: const Color.fromARGB(255, 108, 199, 242),
+                              //color: const Color.fromARGB(255, 108, 199, 242),
+                              color: const Color.fromARGB(255, 3, 41, 72),
                               padding: const EdgeInsets.only(
                                   left: 10, right: 10, top: 0),
                               width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height / 9,
+                              height: MediaQuery.of(context).size.height / 6,
                               child: Row(
                                 children: [
                                   CircleAvatar(
                                     backgroundImage:
-                                      NetworkImage('${doc['image upload']}'),
+                                        NetworkImage('${doc['image upload']}'),
                                     backgroundColor: Colors.blue,
-                                    radius: 30,
+                                    radius: 50,
                                   ),
                                   const SizedBox(
                                     width: 20,
@@ -283,15 +287,33 @@ class _HomePageState extends State<HomePage> {
                                         doc['name'],
                                         style: const TextStyle(
                                             color:
-                                                Color.fromRGBO(21, 101, 192, 1),
+                                               // Color.fromRGBO(21, 101, 192, 1),
+                                               Colors.white,
                                             fontSize: 20,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
-                                        doc['speciality'],
+                                        'Speciality: ${doc['speciality']}',
                                         style: const TextStyle(
                                             color: Colors.white, fontSize: 14),
+                                      ),
+                                       const SizedBox(height: 2),
+                                      Text('Experience: ${doc['exp']} years',
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 14),
+                                      ),
+                                       const SizedBox(height: 2),
+                                      
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.phone, color: Colors.lightGreen,),
+                                          const SizedBox(width: 8,),
+                                          Text( doc['mobileNumber'],
+                                            style: const TextStyle(
+                                                color: Colors.white, fontSize: 14),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
