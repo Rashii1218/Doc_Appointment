@@ -192,18 +192,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   navigateToNextScreen() {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const BottomNavBar()),
-      );
-    } else {
+   
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginView()),
       );
-    }
+    
   }
 
   @override

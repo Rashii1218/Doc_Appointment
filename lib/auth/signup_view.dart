@@ -16,7 +16,6 @@ class _SignUpViewState extends State<SignUpView> {
   String? errorMessage = '';
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController RegnoController = TextEditingController();
   final TextEditingController controllerEmail = TextEditingController();
   final TextEditingController controllerPassword = TextEditingController();
   final TextEditingController controllerName = TextEditingController();
@@ -36,7 +35,6 @@ class _SignUpViewState extends State<SignUpView> {
       );
 
       await _firestore.collection('User').doc(controllerEmail.text).set({
-        'Regno': RegnoController.text,
         'Name': controllerName.text,
         'Mobile': controllerMobile.text,
         'Age': controllerAge.text,
@@ -70,7 +68,8 @@ class _SignUpViewState extends State<SignUpView> {
       decoration: InputDecoration(
         border: const OutlineInputBorder(),
         labelText: title,
-        labelStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        labelStyle:
+            const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -83,11 +82,8 @@ class _SignUpViewState extends State<SignUpView> {
     return ElevatedButton(
       onPressed: () {
         if (_formKey.currentState!.validate()) {
-        createWithEmailAndPassword(context);
-      }
-    
-
-        
+          createWithEmailAndPassword(context);
+        }
       },
       child: const Text(
         'Sign Up',
@@ -123,6 +119,7 @@ class _SignUpViewState extends State<SignUpView> {
                   ),
 
                   child: Form(
+                    key: _formKey,
                     child: Column(
                       children: <Widget>[
                         entryField('Name', controllerName),
@@ -130,9 +127,6 @@ class _SignUpViewState extends State<SignUpView> {
                         entryField('Mobile Number', controllerMobile),
                         const SizedBox(height: 10),
                         entryField('Age', controllerAge),
-                        const SizedBox(height: 10),
-                        entryField('Registration Number',RegnoController ),
-                        
                         const SizedBox(height: 10),
                         entryField('Address', controllerAddress),
                         const SizedBox(height: 10),

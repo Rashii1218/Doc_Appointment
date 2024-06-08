@@ -82,7 +82,8 @@ class _BookedAppointmenState extends State<BookedAppointments> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const BackButton(color: Colors.white,),
+
+        automaticallyImplyLeading: false,
         title: const Text('Your Appointments', style: TextStyle(color: Colors.white),),
         //backgroundColor: const Color.fromARGB(255, 108, 199, 242),
         backgroundColor: const Color.fromARGB(255, 3, 41, 72),

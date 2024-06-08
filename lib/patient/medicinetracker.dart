@@ -62,6 +62,7 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
         ),
       ],
     );
+    _scheduleNotification();
   }
 
   Future<void> _scheduleNotification() async {
@@ -89,7 +90,7 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
 
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id: 13,
+        id: UniqueKey().hashCode,
         channelKey: 'basic_channel',
         title: title,
         body: description,
@@ -102,7 +103,7 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(
+        leading: const BackButton(
           color: Colors.white,
         ),
         title: const Text(
@@ -242,10 +243,7 @@ class _MedicineTrackerPageState extends State<MedicineTrackerPage> {
                     backgroundColor: const Color.fromARGB(255, 3, 41, 72),
                     selectedColor: Colors.white,
                     labelStyle: TextStyle(
-                      color: selectedDays[index]
-                          ? Colors.black
-                          : Colors
-                              .white, 
+                      color: selectedDays[index] ? Colors.black : Colors.white,
                     ),
                   );
                 }),

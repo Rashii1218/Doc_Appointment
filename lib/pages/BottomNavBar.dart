@@ -219,3 +219,108 @@ class _BottomNavBarState extends State<BottomNavBar> {
     );
   }
 }
+
+
+// import "package:doc_appoint/pages/HomePage.dart";
+// import "package:doc_appoint/patient/BookedAppointments.dart";
+// import "package:doc_appoint/patient/User_profile.dart";
+// import "package:doc_appoint/patient/medicine_homepage.dart";
+// import "package:flutter/material.dart";
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:rolling_bottom_bar/rolling_bottom_bar.dart';
+// import 'package:rolling_bottom_bar/rolling_bottom_bar_item.dart';
+
+// class BottomNavBar extends StatefulWidget {
+//   const BottomNavBar({super.key});
+
+//   @override
+//   State<BottomNavBar> createState() => _BottomNavBarState();
+// }
+
+// class _BottomNavBarState extends State<BottomNavBar> {
+//   final FirebaseAuth _auth = FirebaseAuth.instance;
+//   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+//   int currIndex = 0;
+//   PageController pageController = PageController();
+//   UserProfile? userProfile;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     storeUserProfile();
+//   }
+
+//   void storeUserProfile() {
+//     _firestore
+//         .collection('User')
+//         .doc(_auth.currentUser!.email)
+//         .get()
+//         .then((snapshot) {
+//       if (snapshot.exists) {
+//         setState(() {
+//           userProfile = UserProfile(
+//             Name: snapshot.data()!['Name'],
+//             Email: snapshot.data()!['Email'],
+//             Mobile: snapshot.data()!['Mobile'],
+//             Age: snapshot.data()!['Age'],
+//             Address: snapshot.data()!['Address'],
+//             UID: _auth.currentUser!.uid,
+//           );
+//         });
+//       } else {}
+//     });
+//   }
+
+//   void onTapped(int index, BuildContext context) {
+//     setState(() {
+//       currIndex = index;
+//     });
+//     pageController.animateToPage(
+//       index,
+//       duration: const Duration(milliseconds: 400),
+//       curve: Curves.easeOut,
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: SafeArea(
+//         child: PageView(
+//           controller: pageController,
+//           children: [
+//             const HomePage(),
+//             const BookedAppointments(),
+//             MedicineHome(),
+//             userProfile != null
+//                 ? userProfile!
+//                 : const Center(child: CircularProgressIndicator()),
+//           ],
+//         ),
+//       ),
+//       bottomNavigationBar: RollingBottomBar(
+//         color: const Color.fromARGB(255, 3, 41, 72),
+//         controller: pageController,
+//         flat: true,
+//         activeItemColor: const Color.fromARGB(255, 108, 199, 242),
+//         items: const [
+//           RollingBottomBarItem(
+//              Icons.home,
+//           ),
+//           RollingBottomBarItem(
+//             Icons.list,
+//           ),
+//           RollingBottomBarItem(
+//             Icons.calendar_month,
+//           ),
+//           RollingBottomBarItem(
+//             Icons.account_circle,
+//           ),
+//         ],
+//         onTap: (index) => onTapped(index, context),
+//         enableIconRotation: true,
+//       ),
+//     );
+//   }
+// }
